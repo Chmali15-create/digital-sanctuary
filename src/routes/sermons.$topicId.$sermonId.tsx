@@ -2,10 +2,10 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { AmbientBackground } from "@/components/AmbientBackground";
 import { BackBar } from "@/components/BackBar";
 import { PdfViewer } from "@/components/PdfViewer";
-import { getSermon, getSermonTopic } from "@/lib/library-data";
+import { getSermon, getSermonTopic, type Sermon, type Topic } from "@/lib/library-data";
 
 export const Route = createFileRoute("/sermons/$topicId/$sermonId")({
-  loader: ({ params }) => {
+  loader: ({ params }): { sermon: Sermon; topic: Topic } => {
     const sermon = getSermon(params.sermonId);
     const topic = getSermonTopic(params.topicId);
     if (!sermon || !topic) throw notFound();
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/sermons/$topicId/$sermonId")({
 });
 
 function SermonReader() {
-  const { sermon, topic } = Route.useLoaderData();
+  const { sermon, topic } = Route.useLoaderData() as { sermon: Sermon; topic: Topic };
   return (
     <div className="relative min-h-screen">
       <AmbientBackground />

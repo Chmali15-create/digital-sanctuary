@@ -2,10 +2,10 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { AmbientBackground } from "@/components/AmbientBackground";
 import { BackBar } from "@/components/BackBar";
 import { PdfViewer } from "@/components/PdfViewer";
-import { getBook, getBookTopic } from "@/lib/library-data";
+import { getBook, getBookTopic, type Book, type Topic } from "@/lib/library-data";
 
 export const Route = createFileRoute("/books/$topicId/$bookId")({
-  loader: ({ params }) => {
+  loader: ({ params }): { book: Book; topic: Topic } => {
     const book = getBook(params.bookId);
     const topic = getBookTopic(params.topicId);
     if (!book || !topic) throw notFound();
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/books/$topicId/$bookId")({
 });
 
 function BookReader() {
-  const { book, topic } = Route.useLoaderData();
+  const { book, topic } = Route.useLoaderData() as { book: Book; topic: Topic };
   return (
     <div className="relative min-h-screen">
       <AmbientBackground />
