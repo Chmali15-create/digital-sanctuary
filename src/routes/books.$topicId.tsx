@@ -25,7 +25,7 @@ export const Route = createFileRoute("/books/$topicId")({
 });
 
 function TopicBooks() {
-  const { topic, books } = Route.useLoaderData();
+  const { topic, books } = Route.useLoaderData() as ReturnType<typeof getBooksLoaderShape>;
   return (
     <div className="relative min-h-screen">
       <AmbientBackground />
@@ -69,4 +69,9 @@ function TopicBooks() {
       </main>
     </div>
   );
+}
+
+// helper for type inference
+function getBooksLoaderShape() {
+  return { topic: {} as Topic, books: [] as Book[] };
 }

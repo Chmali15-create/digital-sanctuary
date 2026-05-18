@@ -22,7 +22,7 @@ export const Route = createFileRoute("/sermons/$topicId")({
 });
 
 function TopicSermons() {
-  const { topic, sermons } = Route.useLoaderData();
+  const { topic, sermons } = Route.useLoaderData() as { topic: Topic; sermons: Sermon[] };
   return (
     <div className="relative min-h-screen">
       <AmbientBackground />
