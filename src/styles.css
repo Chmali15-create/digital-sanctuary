@@ -160,6 +160,33 @@
   }
 }
 
+/* Script-aware typography */
+html[data-lang="ur"] body,
+html[data-lang="ur"] .font-serif,
+html[data-lang="ur"] h1,
+html[data-lang="ur"] h2,
+html[data-lang="ur"] h3 {
+  font-family: "Noto Nastaliq Urdu", "Noto Naskh Arabic", serif;
+  line-height: 2;
+}
+html[data-lang="ar"] body {
+  font-family: "Noto Naskh Arabic", "Amiri", serif;
+}
+html[data-lang="ar"] .font-serif,
+html[data-lang="ar"] h1,
+html[data-lang="ar"] h2,
+html[data-lang="ar"] h3 {
+  font-family: "Amiri", "Noto Naskh Arabic", serif;
+}
+html[dir="rtl"] .tracking-\[0\.3em\],
+html[dir="rtl"] .tracking-\[0\.2em\],
+html[dir="rtl"] .tracking-widest {
+  letter-spacing: 0;
+}
+html[dir="rtl"] .uppercase {
+  text-transform: none;
+}
+
 @layer utilities {
   .glass {
     background: linear-gradient(135deg, oklch(1 0 0 / 0.06), oklch(1 0 0 / 0.02));
