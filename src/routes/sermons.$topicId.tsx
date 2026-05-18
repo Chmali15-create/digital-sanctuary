@@ -1,11 +1,11 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { AmbientBackground } from "@/components/AmbientBackground";
 import { BackBar } from "@/components/BackBar";
-import { getSermonTopic, getSermonsByTopic } from "@/lib/library-data";
+import { getSermonTopic, getSermonsByTopic, type Sermon, type Topic } from "@/lib/library-data";
 import { BookMarked, Clock, ChevronRight } from "lucide-react";
 
 export const Route = createFileRoute("/sermons/$topicId")({
-  loader: ({ params }) => {
+  loader: ({ params }): { topic: Topic; sermons: Sermon[] } => {
     const topic = getSermonTopic(params.topicId);
     if (!topic) throw notFound();
     return { topic, sermons: getSermonsByTopic(params.topicId) };

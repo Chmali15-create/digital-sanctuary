@@ -1,11 +1,11 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { AmbientBackground } from "@/components/AmbientBackground";
 import { BackBar } from "@/components/BackBar";
-import { getBookTopic, getBooksByTopic } from "@/lib/library-data";
+import { getBookTopic, getBooksByTopic, type Book, type Topic } from "@/lib/library-data";
 import { BookOpen, ChevronRight } from "lucide-react";
 
 export const Route = createFileRoute("/books/$topicId")({
-  loader: ({ params }) => {
+  loader: ({ params }): { topic: Topic; books: Book[] } => {
     const topic = getBookTopic(params.topicId);
     if (!topic) throw notFound();
     return { topic, books: getBooksByTopic(params.topicId) };
