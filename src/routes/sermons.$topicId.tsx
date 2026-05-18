@@ -2,14 +2,25 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { AmbientBackground } from "@/components/AmbientBackground";
 import { BackBar } from "@/components/BackBar";
 import { getSermonTopic, getSermonsByTopic, type Sermon, type Topic } from "@/lib/library-data";
+import { SERMON_TOPICS } from "@/lib/sermon-topics-full";
 import { useI18n } from "@/lib/i18n";
 import { BookMarked, Clock, ChevronRight } from "lucide-react";
 
 export const Route = createFileRoute("/sermons/$topicId")({
   loader: ({ params }): { topic: Topic; sermons: Sermon[] } => {
-    const topic = getSermonTopic(params.topicId);
-    if (!topic) throw notFound();
-    return { topic, sermons: getSermonsByTopic(params.topicId) };
+    const existing = getSermonTopic(params.topicId);
+    if (existing) {
+      return { topic: existing, sermons: getSermonsByTopic(params.topicId) };
+    }
+    const entry = SERMON_TOPICS.find((t) => t.id === params.topicId);
+    if (!entry) throw notFound();
+    const topic: Topic = {
+      id: entry.id,
+      title: { en: entry.title, ur: entry.title, ar: entry.title },
+      description: { en: `Page ${entry.page}`, ur: `صفحہ ${entry.page}`, ar: `صفحة ${entry.page}` },
+      count: 0,
+    };
+    return { topic, sermons: [] };
   },
   notFoundComponent: () => <NotFound />,
   component: TopicSermons,
@@ -31,6 +42,14 @@ function TopicSermons() {
         <header className="mb-10 max-w-2xl animate-fade-up">
           <p className="text-muted-foreground">{tr(topic.description)}</p>
         </header>
+        {sermons.length === 0 && (
+          <div className="rounded-3xl glass p-10 text-center animate-fade-up">
+            <p className="font-serif text-xl text-foreground">{tr(topic.title)}</p>
+            <p className="mt-3 text-sm text-muted-foreground">
+              {t("loading")}
+            </p>
+          </div>
+        )}
         <ul className="space-y-4">
           {sermons.map((s, i) => (
             <li key={s.id} className="animate-fade-up" style={{ animationDelay: `${i * 50}ms` }}>
