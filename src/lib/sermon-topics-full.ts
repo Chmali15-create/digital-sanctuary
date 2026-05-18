@@ -28,6 +28,7 @@ export const SERMON_TOPICS: SermonTopicEntry[] = [
   { id: "_Toc29194050", title: "حیات النبی ﷺ", page: 34 },
   { id: "_Toc29194051", title: "وصیت و میراث اور ایصال ثواب", page: 34 },
   { id: "_Toc29194052", title: "تقدیر", page: 34 },
+  { id: "quran_full_topic", title: "قرآن: اعجاز(معجزہ ہونا)، عظمت و تاثیر، حقوق و آداب، تلاوت وحفظ، فہم، عمل و ہدایت، تعلیم", page: 35 },
   { id: "_Toc29194055", title: "عقائد کی درستگی اور معیار عقائد وغیرہ سے متعلق خطبات", page: 39 },
   { id: "_Toc29194059", title: "عبادات", page: 39 },
   { id: "_Toc29194060", title: "حقیقت عبادت", page: 39 },
