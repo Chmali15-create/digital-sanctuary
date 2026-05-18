@@ -33,13 +33,13 @@ export function PdfViewer({ url, title, page }: PdfViewerProps) {
           setProgress(100);
           return;
         }
-        const chunks: Uint8Array[] = [];
+        const chunks: BlobPart[] = [];
         let received = 0;
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
           if (value) {
-            chunks.push(value);
+            chunks.push(value as BlobPart);
             received += value.length;
             if (total) setProgress(Math.min(99, Math.round((received / total) * 100)));
             else setProgress((p) => Math.min(95, p + 3));
