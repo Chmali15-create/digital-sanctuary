@@ -9,38 +9,130 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SermonsRouteImport } from './routes/sermons'
+import { Route as BooksRouteImport } from './routes/books'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SermonsTopicIdRouteImport } from './routes/sermons.$topicId'
+import { Route as BooksTopicIdRouteImport } from './routes/books.$topicId'
+import { Route as SermonsTopicIdSermonIdRouteImport } from './routes/sermons.$topicId.$sermonId'
+import { Route as BooksTopicIdBookIdRouteImport } from './routes/books.$topicId.$bookId'
 
+const SermonsRoute = SermonsRouteImport.update({
+  id: '/sermons',
+  path: '/sermons',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BooksRoute = BooksRouteImport.update({
+  id: '/books',
+  path: '/books',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SermonsTopicIdRoute = SermonsTopicIdRouteImport.update({
+  id: '/$topicId',
+  path: '/$topicId',
+  getParentRoute: () => SermonsRoute,
+} as any)
+const BooksTopicIdRoute = BooksTopicIdRouteImport.update({
+  id: '/$topicId',
+  path: '/$topicId',
+  getParentRoute: () => BooksRoute,
+} as any)
+const SermonsTopicIdSermonIdRoute = SermonsTopicIdSermonIdRouteImport.update({
+  id: '/$sermonId',
+  path: '/$sermonId',
+  getParentRoute: () => SermonsTopicIdRoute,
+} as any)
+const BooksTopicIdBookIdRoute = BooksTopicIdBookIdRouteImport.update({
+  id: '/$bookId',
+  path: '/$bookId',
+  getParentRoute: () => BooksTopicIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/books': typeof BooksRouteWithChildren
+  '/sermons': typeof SermonsRouteWithChildren
+  '/books/$topicId': typeof BooksTopicIdRouteWithChildren
+  '/sermons/$topicId': typeof SermonsTopicIdRouteWithChildren
+  '/books/$topicId/$bookId': typeof BooksTopicIdBookIdRoute
+  '/sermons/$topicId/$sermonId': typeof SermonsTopicIdSermonIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/books': typeof BooksRouteWithChildren
+  '/sermons': typeof SermonsRouteWithChildren
+  '/books/$topicId': typeof BooksTopicIdRouteWithChildren
+  '/sermons/$topicId': typeof SermonsTopicIdRouteWithChildren
+  '/books/$topicId/$bookId': typeof BooksTopicIdBookIdRoute
+  '/sermons/$topicId/$sermonId': typeof SermonsTopicIdSermonIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/books': typeof BooksRouteWithChildren
+  '/sermons': typeof SermonsRouteWithChildren
+  '/books/$topicId': typeof BooksTopicIdRouteWithChildren
+  '/sermons/$topicId': typeof SermonsTopicIdRouteWithChildren
+  '/books/$topicId/$bookId': typeof BooksTopicIdBookIdRoute
+  '/sermons/$topicId/$sermonId': typeof SermonsTopicIdSermonIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/books'
+    | '/sermons'
+    | '/books/$topicId'
+    | '/sermons/$topicId'
+    | '/books/$topicId/$bookId'
+    | '/sermons/$topicId/$sermonId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/books'
+    | '/sermons'
+    | '/books/$topicId'
+    | '/sermons/$topicId'
+    | '/books/$topicId/$bookId'
+    | '/sermons/$topicId/$sermonId'
+  id:
+    | '__root__'
+    | '/'
+    | '/books'
+    | '/sermons'
+    | '/books/$topicId'
+    | '/sermons/$topicId'
+    | '/books/$topicId/$bookId'
+    | '/sermons/$topicId/$sermonId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BooksRoute: typeof BooksRouteWithChildren
+  SermonsRoute: typeof SermonsRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sermons': {
+      id: '/sermons'
+      path: '/sermons'
+      fullPath: '/sermons'
+      preLoaderRoute: typeof SermonsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/books': {
+      id: '/books'
+      path: '/books'
+      fullPath: '/books'
+      preLoaderRoute: typeof BooksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +140,87 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sermons/$topicId': {
+      id: '/sermons/$topicId'
+      path: '/$topicId'
+      fullPath: '/sermons/$topicId'
+      preLoaderRoute: typeof SermonsTopicIdRouteImport
+      parentRoute: typeof SermonsRoute
+    }
+    '/books/$topicId': {
+      id: '/books/$topicId'
+      path: '/$topicId'
+      fullPath: '/books/$topicId'
+      preLoaderRoute: typeof BooksTopicIdRouteImport
+      parentRoute: typeof BooksRoute
+    }
+    '/sermons/$topicId/$sermonId': {
+      id: '/sermons/$topicId/$sermonId'
+      path: '/$sermonId'
+      fullPath: '/sermons/$topicId/$sermonId'
+      preLoaderRoute: typeof SermonsTopicIdSermonIdRouteImport
+      parentRoute: typeof SermonsTopicIdRoute
+    }
+    '/books/$topicId/$bookId': {
+      id: '/books/$topicId/$bookId'
+      path: '/$bookId'
+      fullPath: '/books/$topicId/$bookId'
+      preLoaderRoute: typeof BooksTopicIdBookIdRouteImport
+      parentRoute: typeof BooksTopicIdRoute
+    }
   }
 }
 
+interface BooksTopicIdRouteChildren {
+  BooksTopicIdBookIdRoute: typeof BooksTopicIdBookIdRoute
+}
+
+const BooksTopicIdRouteChildren: BooksTopicIdRouteChildren = {
+  BooksTopicIdBookIdRoute: BooksTopicIdBookIdRoute,
+}
+
+const BooksTopicIdRouteWithChildren = BooksTopicIdRoute._addFileChildren(
+  BooksTopicIdRouteChildren,
+)
+
+interface BooksRouteChildren {
+  BooksTopicIdRoute: typeof BooksTopicIdRouteWithChildren
+}
+
+const BooksRouteChildren: BooksRouteChildren = {
+  BooksTopicIdRoute: BooksTopicIdRouteWithChildren,
+}
+
+const BooksRouteWithChildren = BooksRoute._addFileChildren(BooksRouteChildren)
+
+interface SermonsTopicIdRouteChildren {
+  SermonsTopicIdSermonIdRoute: typeof SermonsTopicIdSermonIdRoute
+}
+
+const SermonsTopicIdRouteChildren: SermonsTopicIdRouteChildren = {
+  SermonsTopicIdSermonIdRoute: SermonsTopicIdSermonIdRoute,
+}
+
+const SermonsTopicIdRouteWithChildren = SermonsTopicIdRoute._addFileChildren(
+  SermonsTopicIdRouteChildren,
+)
+
+interface SermonsRouteChildren {
+  SermonsTopicIdRoute: typeof SermonsTopicIdRouteWithChildren
+}
+
+const SermonsRouteChildren: SermonsRouteChildren = {
+  SermonsTopicIdRoute: SermonsTopicIdRouteWithChildren,
+}
+
+const SermonsRouteWithChildren =
+  SermonsRoute._addFileChildren(SermonsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BooksRoute: BooksRouteWithChildren,
+  SermonsRoute: SermonsRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
