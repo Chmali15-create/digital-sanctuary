@@ -3,6 +3,7 @@ import { AmbientBackground } from "@/components/AmbientBackground";
 import { BackBar } from "@/components/BackBar";
 import { TopicCard } from "@/components/TopicCard";
 import { sermonTopics } from "@/lib/library-data";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/sermons")({
   head: () => ({
@@ -15,31 +16,28 @@ export const Route = createFileRoute("/sermons")({
 });
 
 function SermonsIndex() {
+  const { t, tr } = useI18n();
   return (
     <div className="relative min-h-screen">
       <AmbientBackground />
-      <BackBar to="/" label="Sermons" eyebrow="Section II — The Voice" />
+      <BackBar to="/" label={t("sermons")} eyebrow={t("sectionIIVoice")} />
       <main className="relative z-10 mx-auto max-w-6xl px-5 pb-24 pt-12 sm:px-8">
         <header className="mb-12 max-w-2xl animate-fade-up">
-          <h2 className="font-serif text-4xl text-foreground sm:text-5xl">
-            Themes for the <span className="text-gradient-gold italic">soul</span>
-          </h2>
-          <p className="mt-4 text-muted-foreground">
-            Each theme opens to sermons indexed with their source book and page.
-          </p>
+          <h2 className="font-serif text-4xl text-foreground sm:text-5xl">{t("themesForSoul")}</h2>
+          <p className="mt-4 text-muted-foreground">{t("themesIntro")}</p>
         </header>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {sermonTopics.map((t, i) => (
+          {sermonTopics.map((topic, i) => (
             <TopicCard
-              key={t.id}
+              key={topic.id}
               to="/sermons/$topicId"
-              params={{ topicId: t.id }}
+              params={{ topicId: topic.id }}
               index={i}
               number={String(i + 1).padStart(2, "0")}
-              title={t.title}
-              description={t.description}
-              count={t.count}
-              label="Sermons"
+              title={tr(topic.title)}
+              description={tr(topic.description)}
+              count={topic.count}
+              label={t("sermonsCount")}
             />
           ))}
         </div>

@@ -1,5 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { useI18n } from "@/lib/i18n";
 
 interface BackBarProps {
   to: string;
@@ -9,18 +11,22 @@ interface BackBarProps {
 }
 
 export function BackBar({ to, params, label, eyebrow }: BackBarProps) {
+  const { t, dir } = useI18n();
   return (
     <div className="sticky top-0 z-30 glass-strong border-b border-border/40">
       <div className="mx-auto flex max-w-6xl items-center gap-4 px-5 py-4 sm:px-8">
         <Link
           to={to as any}
           params={params as any}
-          className="group flex h-10 w-10 items-center justify-center rounded-full glass transition hover:ring-gold"
-          aria-label="Back"
+          className="group flex h-10 w-10 shrink-0 items-center justify-center rounded-full glass transition hover:ring-gold"
+          aria-label={t("back")}
         >
-          <ArrowLeft className="h-4 w-4 text-foreground/80 transition group-hover:-translate-x-0.5 group-hover:text-primary" />
+          <ArrowLeft
+            className="h-4 w-4 text-foreground/80 transition group-hover:text-primary"
+            style={{ transform: dir === "rtl" ? "scaleX(-1)" : undefined }}
+          />
         </Link>
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           {eyebrow && (
             <p className="text-[10px] uppercase tracking-[0.3em] text-primary/80">{eyebrow}</p>
           )}
@@ -28,6 +34,7 @@ export function BackBar({ to, params, label, eyebrow }: BackBarProps) {
             {label}
           </h1>
         </div>
+        <LanguageSwitcher compact />
       </div>
     </div>
   );
