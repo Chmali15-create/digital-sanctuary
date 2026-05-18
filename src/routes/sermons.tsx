@@ -48,7 +48,7 @@ function SermonsIndex() {
               <span className="shrink-0 font-serif text-xs tabular-nums text-primary/70 pt-0.5">
                 {String(i + 1).padStart(3, "0")}
               </span>
-              <span className="flex-1 font-[var(--font-urdu)] text-base leading-snug text-foreground sm:text-lg" lang="ur">
+              <span className="flex-1 text-base leading-snug text-foreground sm:text-lg" lang="ur">
                 {topic.title}
               </span>
               <ArrowUpRight
