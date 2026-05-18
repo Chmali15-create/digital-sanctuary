@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowUpRight } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 
 interface TopicCardProps {
   to: string;
@@ -13,6 +14,7 @@ interface TopicCardProps {
 }
 
 export function TopicCard({ to, params, index, number, title, description, count, label }: TopicCardProps) {
+  const { dir } = useI18n();
   return (
     <Link
       to={to as any}
@@ -22,7 +24,10 @@ export function TopicCard({ to, params, index, number, title, description, count
     >
       <div className="flex items-start justify-between gap-4">
         <span className="font-serif text-sm tabular-nums text-primary/80">{number}</span>
-        <ArrowUpRight className="h-4 w-4 text-foreground/40 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary" />
+        <ArrowUpRight
+          className="h-4 w-4 text-foreground/40 transition group-hover:text-primary"
+          style={{ transform: dir === "rtl" ? "scaleX(-1)" : undefined }}
+        />
       </div>
       <h3 className="mt-6 font-serif text-2xl leading-tight text-foreground">{title}</h3>
       <p className="mt-2 text-sm text-muted-foreground">{description}</p>
