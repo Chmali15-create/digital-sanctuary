@@ -107,4 +107,3 @@ function HomeCard({ to, number, label, title, description, icon, delay }: HomeCa
     </Link>
   );
 }
-}
