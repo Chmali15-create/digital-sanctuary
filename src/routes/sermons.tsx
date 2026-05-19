@@ -1,10 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Link } from "@tanstack/react-router";
-import { AmbientBackground } from "@/components/AmbientBackground";
-import { BackBar } from "@/components/BackBar";
-import { useI18n } from "@/lib/i18n";
-import { SERMON_TOPICS } from "@/lib/sermon-topics-full";
-import { ArrowUpRight } from "lucide-react";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/sermons")({
   head: () => ({
@@ -13,10 +7,8 @@ export const Route = createFileRoute("/sermons")({
       { name: "description", content: "Indexed sermons grouped by spiritual theme." },
     ],
   }),
-  component: SermonsIndex,
+  component: () => <Outlet />,
 });
-
-function SermonsIndex() {
   const { t, dir } = useI18n();
   return (
     <div className="relative min-h-screen">
