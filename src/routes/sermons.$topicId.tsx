@@ -7,7 +7,9 @@ import { IMANIYAT_SUBTOPICS, IMANIYAT_PARENT_ID } from "@/lib/imaniyat-subtopics
 import { IBADAT_SUBTOPICS, IBADAT_PARENT_ID } from "@/lib/ibadat-subtopics";
 import { IMAN_SUBTOPICS, IMAN_PARENT_ID } from "@/lib/iman-subtopics";
 import { useI18n } from "@/lib/i18n";
-import { BookMarked, Clock, ChevronRight, ArrowUpRight } from "lucide-react";
+import { BookMarked, Clock, ChevronRight, ArrowUpRight, BookOpen } from "lucide-react";
+import { useState } from "react";
+import { PdfDialog } from "@/components/PdfDialog";
 
 export const Route = createFileRoute("/sermons/$topicId")({
   loader: ({ params }): { topic: Topic; sermons: Sermon[] } => {
@@ -52,6 +54,7 @@ function NotFound() {
 function TopicSermons() {
   const { topic, sermons } = Route.useLoaderData() as { topic: Topic; sermons: Sermon[] };
   const { t, tr, dir } = useI18n();
+  const [pdfState, setPdfState] = useState<{ url: string; page?: number; title: string } | null>(null);
   const isImaniyat = topic.id === IMANIYAT_PARENT_ID;
   const isIbadat = topic.id === IBADAT_PARENT_ID;
   const isIman = topic.id === IMAN_PARENT_ID;
@@ -77,38 +80,72 @@ function TopicSermons() {
           >
             {subList.map((sub, i) => {
               const reference = (sub as { reference?: string }).reference;
+              const pdfUrl = (sub as { pdfUrl?: string }).pdfUrl;
+              const pdfPage = (sub as { pdfPage?: number }).pdfPage;
+              const commonClass = `group relative flex items-start justify-between gap-3 rounded-2xl glass p-4 transition duration-300 hover:-translate-y-0.5 hover:ring-gold sm:p-5 animate-fade-up ${dir === "rtl" ? "text-right" : "text-left"}`;
+              const inner = (
+                <>
+                  <span className="shrink-0 font-serif text-xs tabular-nums text-primary/70 pt-0.5">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="flex flex-1 flex-wrap items-center justify-between gap-x-3 gap-y-1">
+                    {reference && (
+                      <span
+                        className="order-first shrink-0 rounded-full border border-primary/30 bg-primary/5 px-2 py-0.5 text-[10px] font-medium tabular-nums text-primary/70 sm:text-xs"
+                        dir="rtl"
+                      >
+                        {reference}
+                      </span>
+                    )}
+                    <span className="min-w-0 flex-1 text-base leading-snug text-foreground sm:text-lg break-words">
+                      {tr(sub.title)}
+                    </span>
+                  </span>
+                  {pdfUrl ? (
+                    <BookOpen className="h-4 w-4 shrink-0 text-primary/70 transition group-hover:text-primary" />
+                  ) : (
+                    <ArrowUpRight
+                      className="h-4 w-4 shrink-0 text-foreground/40 transition group-hover:text-primary"
+                      style={{ transform: dir === "rtl" ? "scaleX(-1)" : undefined }}
+                    />
+                  )}
+                </>
+              );
+              if (pdfUrl) {
+                return (
+                  <button
+                    key={sub.id}
+                    type="button"
+                    onClick={() => setPdfState({ url: pdfUrl, page: pdfPage, title: tr(sub.title) })}
+                    className={`${commonClass} text-start w-full`}
+                    style={{ animationDelay: `${i * 30}ms` }}
+                  >
+                    {inner}
+                  </button>
+                );
+              }
               return (
               <Link
                 key={sub.id}
                 to="/sermons/$topicId"
                 params={{ topicId: sub.id }}
-                className={`group relative flex items-start justify-between gap-3 rounded-2xl glass p-4 transition duration-300 hover:-translate-y-0.5 hover:ring-gold sm:p-5 animate-fade-up ${dir === "rtl" ? "text-right" : "text-left"}`}
+                className={commonClass}
                 style={{ animationDelay: `${i * 30}ms` }}
               >
-                <span className="shrink-0 font-serif text-xs tabular-nums text-primary/70 pt-0.5">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <span className="flex flex-1 flex-wrap items-center justify-between gap-x-3 gap-y-1">
-                  {reference && (
-                    <span
-                      className="order-first shrink-0 rounded-full border border-primary/30 bg-primary/5 px-2 py-0.5 text-[10px] font-medium tabular-nums text-primary/70 sm:text-xs"
-                      dir="rtl"
-                    >
-                      {reference}
-                    </span>
-                  )}
-                  <span className="min-w-0 flex-1 text-base leading-snug text-foreground sm:text-lg break-words">
-                    {tr(sub.title)}
-                  </span>
-                </span>
-                <ArrowUpRight
-                  className="h-4 w-4 shrink-0 text-foreground/40 transition group-hover:text-primary"
-                  style={{ transform: dir === "rtl" ? "scaleX(-1)" : undefined }}
-                />
+                {inner}
               </Link>
               );
             })}
           </div>
+        )}
+        {pdfState && (
+          <PdfDialog
+            open={!!pdfState}
+            onOpenChange={(o) => !o && setPdfState(null)}
+            url={pdfState.url}
+            page={pdfState.page}
+            title={pdfState.title}
+          />
         )}
         {!subList && sermons.length === 0 && (
           <div className="rounded-3xl glass p-10 text-center animate-fade-up">
