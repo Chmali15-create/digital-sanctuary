@@ -64,14 +64,14 @@ function TopicSermons() {
         {subList && (
           <div
             className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
-            dir="rtl"
+            dir={dir}
           >
             {subList.map((sub, i) => (
               <Link
                 key={sub.id}
                 to="/sermons/$topicId"
                 params={{ topicId: sub.id }}
-                className="group relative flex items-start justify-between gap-3 rounded-2xl glass p-4 text-right transition duration-300 hover:-translate-y-0.5 hover:ring-gold sm:p-5 animate-fade-up"
+                className={`group relative flex items-start justify-between gap-3 rounded-2xl glass p-4 transition duration-300 hover:-translate-y-0.5 hover:ring-gold sm:p-5 animate-fade-up ${dir === "rtl" ? "text-right" : "text-left"}`}
                 style={{ animationDelay: `${i * 30}ms` }}
               >
                 <span className="shrink-0 font-serif text-xs tabular-nums text-primary/70 pt-0.5">
