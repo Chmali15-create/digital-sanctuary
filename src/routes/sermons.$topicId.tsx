@@ -5,6 +5,7 @@ import { getSermonTopic, getSermonsByTopic, type Sermon, type Topic } from "@/li
 import { SERMON_TOPICS } from "@/lib/sermon-topics-full";
 import { IMANIYAT_SUBTOPICS, IMANIYAT_PARENT_ID } from "@/lib/imaniyat-subtopics";
 import { IBADAT_SUBTOPICS, IBADAT_PARENT_ID } from "@/lib/ibadat-subtopics";
+import { IMAN_SUBTOPICS, IMAN_PARENT_ID } from "@/lib/iman-subtopics";
 import { useI18n } from "@/lib/i18n";
 import { BookMarked, Clock, ChevronRight, ArrowUpRight } from "lucide-react";
 
@@ -26,7 +27,8 @@ export const Route = createFileRoute("/sermons/$topicId")({
     }
     const sub =
       IMANIYAT_SUBTOPICS.find((s) => s.id === params.topicId) ||
-      IBADAT_SUBTOPICS.find((s) => s.id === params.topicId);
+      IBADAT_SUBTOPICS.find((s) => s.id === params.topicId) ||
+      IMAN_SUBTOPICS.find((s) => s.id === params.topicId);
     if (sub) {
       const topic: Topic = {
         id: sub.id,
@@ -52,7 +54,14 @@ function TopicSermons() {
   const { t, tr, dir } = useI18n();
   const isImaniyat = topic.id === IMANIYAT_PARENT_ID;
   const isIbadat = topic.id === IBADAT_PARENT_ID;
-  const subList = isImaniyat ? IMANIYAT_SUBTOPICS : isIbadat ? IBADAT_SUBTOPICS : null;
+  const isIman = topic.id === IMAN_PARENT_ID;
+  const subList = isImaniyat
+    ? IMANIYAT_SUBTOPICS
+    : isIbadat
+      ? IBADAT_SUBTOPICS
+      : isIman
+        ? IMAN_SUBTOPICS
+        : null;
   return (
     <div className="relative min-h-screen">
       <AmbientBackground />
