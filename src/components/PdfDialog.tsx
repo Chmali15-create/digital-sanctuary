@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Download, ExternalLink, FileText, X } from "lucide-react";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { useI18n } from "@/lib/i18n";
 
 interface PdfDialogProps {
   open: boolean;
@@ -14,7 +12,6 @@ interface PdfDialogProps {
 
 export function PdfDialog({ open, onOpenChange, url, page, title }: PdfDialogProps) {
   const isMobile = useIsMobile();
-  const { t } = useI18n();
   const [iframeFailed, setIframeFailed] = useState(false);
   const src = `${url}#page=${page ?? 1}&view=FitH`;
 
@@ -45,7 +42,7 @@ export function PdfDialog({ open, onOpenChange, url, page, title }: PdfDialogPro
           <button
             type="button"
             onClick={() => onOpenChange(false)}
-            aria-label={t("close") ?? "Close"}
+            aria-label="Close"
             className="inline-flex h-9 w-9 items-center justify-center rounded-full text-foreground/70 transition hover:bg-secondary hover:text-foreground"
           >
             <X className="h-5 w-5" />
