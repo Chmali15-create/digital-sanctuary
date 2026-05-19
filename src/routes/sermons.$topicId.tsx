@@ -12,7 +12,9 @@ export const Route = createFileRoute("/sermons/$topicId")({
     if (existing) {
       return { topic: existing, sermons: getSermonsByTopic(params.topicId) };
     }
-    const entry = SERMON_TOPICS.find((t) => t.id === params.topicId);
+    const entry =
+      SERMON_TOPICS.find((t) => t.id === params.topicId) ??
+      IMANIYAT_SUBTOPICS.find((t) => t.id === params.topicId);
     if (!entry) throw notFound();
     const topic: Topic = {
       id: entry.id,
