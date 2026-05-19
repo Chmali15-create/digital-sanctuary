@@ -18,7 +18,7 @@ export const Route = createFileRoute("/sermons/$topicId")({
     if (entry) {
       const topic: Topic = {
         id: entry.id,
-        title: { en: entry.title, ur: entry.title, ar: entry.title },
+        title: entry.title,
         description: { en: `Page ${entry.page}`, ur: `صفحہ ${entry.page}`, ar: `صفحة ${entry.page}` },
         count: 0,
       };

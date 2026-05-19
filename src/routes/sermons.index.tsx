@@ -10,7 +10,7 @@ export const Route = createFileRoute("/sermons/")({
 });
 
 function SermonsIndex() {
-  const { t, dir } = useI18n();
+  const { t, tr, dir } = useI18n();
   return (
     <div className="relative min-h-screen">
       <AmbientBackground />
@@ -25,14 +25,14 @@ function SermonsIndex() {
         </header>
         <div
           className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
-          dir="rtl"
+          dir={dir}
         >
           {SERMON_TOPICS.map((topic, i) => (
             <Link
               key={topic.id}
               to="/sermons/$topicId"
               params={{ topicId: topic.id }}
-              className="group relative flex items-start justify-between gap-3 rounded-2xl glass p-4 text-right transition duration-300 hover:-translate-y-0.5 hover:ring-gold sm:p-5"
+              className={`group relative flex items-start justify-between gap-3 rounded-2xl glass p-4 transition duration-300 hover:-translate-y-0.5 hover:ring-gold sm:p-5 ${dir === "rtl" ? "text-right" : "text-left"}`}
               style={{
                 contentVisibility: "auto",
                 containIntrinsicSize: "0 96px",
@@ -41,8 +41,8 @@ function SermonsIndex() {
               <span className="shrink-0 font-serif text-xs tabular-nums text-primary/70 pt-0.5">
                 {String(i + 1).padStart(3, "0")}
               </span>
-              <span className="flex-1 text-base leading-snug text-foreground sm:text-lg" lang="ur">
-                {topic.title}
+              <span className="flex-1 text-base leading-snug text-foreground sm:text-lg break-words">
+                {tr(topic.title)}
               </span>
               <ArrowUpRight
                 className="h-4 w-4 shrink-0 text-foreground/40 transition group-hover:text-primary"
