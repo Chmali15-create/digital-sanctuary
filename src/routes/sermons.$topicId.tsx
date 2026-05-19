@@ -2,9 +2,9 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { AmbientBackground } from "@/components/AmbientBackground";
 import { BackBar } from "@/components/BackBar";
 import { getSermonTopic, getSermonsByTopic, type Sermon, type Topic } from "@/lib/library-data";
-import { SERMON_TOPICS } from "@/lib/sermon-topics-full";
+import { SERMON_TOPICS, IMANIYAT_SUBTOPICS } from "@/lib/sermon-topics-full";
 import { useI18n } from "@/lib/i18n";
-import { BookMarked, Clock, ChevronRight } from "lucide-react";
+import { BookMarked, Clock, ChevronRight, ArrowUpRight } from "lucide-react";
 
 export const Route = createFileRoute("/sermons/$topicId")({
   loader: ({ params }): { topic: Topic; sermons: Sermon[] } => {
@@ -12,7 +12,9 @@ export const Route = createFileRoute("/sermons/$topicId")({
     if (existing) {
       return { topic: existing, sermons: getSermonsByTopic(params.topicId) };
     }
-    const entry = SERMON_TOPICS.find((t) => t.id === params.topicId);
+    const entry =
+      SERMON_TOPICS.find((t) => t.id === params.topicId) ??
+      IMANIYAT_SUBTOPICS.find((t) => t.id === params.topicId);
     if (!entry) throw notFound();
     const topic: Topic = {
       id: entry.id,
@@ -34,6 +36,7 @@ function NotFound() {
 function TopicSermons() {
   const { topic, sermons } = Route.useLoaderData() as { topic: Topic; sermons: Sermon[] };
   const { t, tr, dir } = useI18n();
+  const isImaniyat = topic.id === "_Toc29194034";
   return (
     <div className="relative min-h-screen">
       <AmbientBackground />
@@ -42,14 +45,41 @@ function TopicSermons() {
         <header className="mb-10 max-w-2xl animate-fade-up">
           <p className="text-muted-foreground">{tr(topic.description)}</p>
         </header>
-        {sermons.length === 0 && (
+        {isImaniyat ? (
+          <div
+            className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+            dir="rtl"
+          >
+            {IMANIYAT_SUBTOPICS.map((sub, i) => (
+              <Link
+                key={sub.id}
+                to="/sermons/$topicId"
+                params={{ topicId: sub.id }}
+                className="group relative flex items-start justify-between gap-3 rounded-2xl glass p-4 text-right transition duration-300 hover:-translate-y-0.5 hover:ring-gold sm:p-5 animate-fade-up"
+                style={{ animationDelay: `${i * 30}ms` }}
+              >
+                <span className="shrink-0 font-serif text-xs tabular-nums text-primary/70 pt-0.5">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span className="flex-1 text-base leading-snug text-foreground sm:text-lg break-words" lang="ur">
+                  {sub.title}
+                </span>
+                <ArrowUpRight
+                  className="h-4 w-4 shrink-0 text-foreground/40 transition group-hover:text-primary"
+                  style={{ transform: dir === "rtl" ? "scaleX(-1)" : undefined }}
+                />
+              </Link>
+            ))}
+          </div>
+        ) : sermons.length === 0 ? (
           <div className="rounded-3xl glass p-10 text-center animate-fade-up">
             <p className="font-serif text-xl text-foreground">{tr(topic.title)}</p>
             <p className="mt-3 text-sm text-muted-foreground">
               {t("loading")}
             </p>
           </div>
-        )}
+        ) : null}
+        {!isImaniyat && (
         <ul className="space-y-4">
           {sermons.map((s, i) => (
             <li key={s.id} className="animate-fade-up" style={{ animationDelay: `${i * 50}ms` }}>
@@ -82,6 +112,7 @@ function TopicSermons() {
             </li>
           ))}
         </ul>
+        )}
       </main>
     </div>
   );
