@@ -4,6 +4,7 @@ import { BackBar } from "@/components/BackBar";
 import { getSermonTopic, getSermonsByTopic, type Sermon, type Topic } from "@/lib/library-data";
 import { SERMON_TOPICS } from "@/lib/sermon-topics-full";
 import { IMANIYAT_SUBTOPICS, IMANIYAT_PARENT_ID } from "@/lib/imaniyat-subtopics";
+import { IBADAT_SUBTOPICS, IBADAT_PARENT_ID } from "@/lib/ibadat-subtopics";
 import { useI18n } from "@/lib/i18n";
 import { BookMarked, Clock, ChevronRight, ArrowUpRight } from "lucide-react";
 
@@ -23,7 +24,9 @@ export const Route = createFileRoute("/sermons/$topicId")({
       };
       return { topic, sermons: [] };
     }
-    const sub = IMANIYAT_SUBTOPICS.find((s) => s.id === params.topicId);
+    const sub =
+      IMANIYAT_SUBTOPICS.find((s) => s.id === params.topicId) ||
+      IBADAT_SUBTOPICS.find((s) => s.id === params.topicId);
     if (sub) {
       const topic: Topic = {
         id: sub.id,
@@ -48,6 +51,8 @@ function TopicSermons() {
   const { topic, sermons } = Route.useLoaderData() as { topic: Topic; sermons: Sermon[] };
   const { t, tr, dir } = useI18n();
   const isImaniyat = topic.id === IMANIYAT_PARENT_ID;
+  const isIbadat = topic.id === IBADAT_PARENT_ID;
+  const subList = isImaniyat ? IMANIYAT_SUBTOPICS : isIbadat ? IBADAT_SUBTOPICS : null;
   return (
     <div className="relative min-h-screen">
       <AmbientBackground />
@@ -56,12 +61,12 @@ function TopicSermons() {
         <header className="mb-10 max-w-2xl animate-fade-up">
           <p className="text-muted-foreground">{tr(topic.description)}</p>
         </header>
-        {isImaniyat && (
+        {subList && (
           <div
             className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
             dir="rtl"
           >
-            {IMANIYAT_SUBTOPICS.map((sub, i) => (
+            {subList.map((sub, i) => (
               <Link
                 key={sub.id}
                 to="/sermons/$topicId"
@@ -83,7 +88,7 @@ function TopicSermons() {
             ))}
           </div>
         )}
-        {!isImaniyat && sermons.length === 0 && (
+        {!subList && sermons.length === 0 && (
           <div className="rounded-3xl glass p-10 text-center animate-fade-up">
             <p className="font-serif text-xl text-foreground">{tr(topic.title)}</p>
             <p className="mt-3 text-sm text-muted-foreground">
