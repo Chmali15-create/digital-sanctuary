@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SermonsRouteImport } from './routes/sermons'
 import { Route as BooksRouteImport } from './routes/books'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SermonsIndexRouteImport } from './routes/sermons.index'
 import { Route as SermonsTopicIdRouteImport } from './routes/sermons.$topicId'
 import { Route as BooksTopicIdRouteImport } from './routes/books.$topicId'
 import { Route as SermonsTopicIdSermonIdRouteImport } from './routes/sermons.$topicId.$sermonId'
@@ -31,6 +32,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const SermonsIndexRoute = SermonsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SermonsRoute,
 } as any)
 const SermonsTopicIdRoute = SermonsTopicIdRouteImport.update({
   id: '/$topicId',
@@ -59,15 +65,16 @@ export interface FileRoutesByFullPath {
   '/sermons': typeof SermonsRouteWithChildren
   '/books/$topicId': typeof BooksTopicIdRouteWithChildren
   '/sermons/$topicId': typeof SermonsTopicIdRouteWithChildren
+  '/sermons/': typeof SermonsIndexRoute
   '/books/$topicId/$bookId': typeof BooksTopicIdBookIdRoute
   '/sermons/$topicId/$sermonId': typeof SermonsTopicIdSermonIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/books': typeof BooksRouteWithChildren
-  '/sermons': typeof SermonsRouteWithChildren
   '/books/$topicId': typeof BooksTopicIdRouteWithChildren
   '/sermons/$topicId': typeof SermonsTopicIdRouteWithChildren
+  '/sermons': typeof SermonsIndexRoute
   '/books/$topicId/$bookId': typeof BooksTopicIdBookIdRoute
   '/sermons/$topicId/$sermonId': typeof SermonsTopicIdSermonIdRoute
 }
@@ -78,6 +85,7 @@ export interface FileRoutesById {
   '/sermons': typeof SermonsRouteWithChildren
   '/books/$topicId': typeof BooksTopicIdRouteWithChildren
   '/sermons/$topicId': typeof SermonsTopicIdRouteWithChildren
+  '/sermons/': typeof SermonsIndexRoute
   '/books/$topicId/$bookId': typeof BooksTopicIdBookIdRoute
   '/sermons/$topicId/$sermonId': typeof SermonsTopicIdSermonIdRoute
 }
@@ -89,15 +97,16 @@ export interface FileRouteTypes {
     | '/sermons'
     | '/books/$topicId'
     | '/sermons/$topicId'
+    | '/sermons/'
     | '/books/$topicId/$bookId'
     | '/sermons/$topicId/$sermonId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/books'
-    | '/sermons'
     | '/books/$topicId'
     | '/sermons/$topicId'
+    | '/sermons'
     | '/books/$topicId/$bookId'
     | '/sermons/$topicId/$sermonId'
   id:
@@ -107,6 +116,7 @@ export interface FileRouteTypes {
     | '/sermons'
     | '/books/$topicId'
     | '/sermons/$topicId'
+    | '/sermons/'
     | '/books/$topicId/$bookId'
     | '/sermons/$topicId/$sermonId'
   fileRoutesById: FileRoutesById
@@ -139,6 +149,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/sermons/': {
+      id: '/sermons/'
+      path: '/'
+      fullPath: '/sermons/'
+      preLoaderRoute: typeof SermonsIndexRouteImport
+      parentRoute: typeof SermonsRoute
     }
     '/sermons/$topicId': {
       id: '/sermons/$topicId'
@@ -207,10 +224,12 @@ const SermonsTopicIdRouteWithChildren = SermonsTopicIdRoute._addFileChildren(
 
 interface SermonsRouteChildren {
   SermonsTopicIdRoute: typeof SermonsTopicIdRouteWithChildren
+  SermonsIndexRoute: typeof SermonsIndexRoute
 }
 
 const SermonsRouteChildren: SermonsRouteChildren = {
   SermonsTopicIdRoute: SermonsTopicIdRouteWithChildren,
+  SermonsIndexRoute: SermonsIndexRoute,
 }
 
 const SermonsRouteWithChildren =
