@@ -75,7 +75,9 @@ function TopicSermons() {
             className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
             dir={dir}
           >
-            {subList.map((sub, i) => (
+            {subList.map((sub, i) => {
+              const reference = (sub as { reference?: string }).reference;
+              return (
               <Link
                 key={sub.id}
                 to="/sermons/$topicId"
@@ -86,15 +88,26 @@ function TopicSermons() {
                 <span className="shrink-0 font-serif text-xs tabular-nums text-primary/70 pt-0.5">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <span className="flex-1 text-base leading-snug text-foreground sm:text-lg break-words">
-                  {tr(sub.title)}
+                <span className="flex flex-1 flex-wrap items-center justify-between gap-x-3 gap-y-1">
+                  {reference && (
+                    <span
+                      className="order-first shrink-0 rounded-full border border-primary/30 bg-primary/5 px-2 py-0.5 text-[10px] font-medium tabular-nums text-primary/70 sm:text-xs"
+                      dir="rtl"
+                    >
+                      {reference}
+                    </span>
+                  )}
+                  <span className="min-w-0 flex-1 text-base leading-snug text-foreground sm:text-lg break-words">
+                    {tr(sub.title)}
+                  </span>
                 </span>
                 <ArrowUpRight
                   className="h-4 w-4 shrink-0 text-foreground/40 transition group-hover:text-primary"
                   style={{ transform: dir === "rtl" ? "scaleX(-1)" : undefined }}
                 />
               </Link>
-            ))}
+              );
+            })}
           </div>
         )}
         {!subList && sermons.length === 0 && (
