@@ -1,12 +1,12 @@
 // Sub-sections shown when the user opens "ایمان" (imn_01).
 import type { Localized } from "@/lib/i18n";
 
-export interface ImanSubtopic { id: string; title: Localized; }
+export interface ImanSubtopic { id: string; title: Localized; reference?: string; }
 
 export const IMAN_PARENT_ID = "imn_01";
 
 export const IMAN_SUBTOPICS: ImanSubtopic[] = [
-  { id: "imn1_01", title: { ur: "تفصیل الدین (ایمان وعمل)", en: "Detail of Deen (Faith & Action)", ar: "تفصيل الدين (الإيمان والعمل)" } },
+  { id: "imn1_01", title: { ur: "تفصیل الدین (ایمان وعمل)", en: "Detail of Deen (Faith & Action)", ar: "تفصيل الدين (الإيمان والعمل)" }, reference: "خطبات حکیم الامت: 48/3" },
   { id: "imn1_02", title: { ur: "شرط الایمان", en: "Condition of Faith", ar: "شرط الإيمان" } },
   { id: "imn1_03", title: { ur: "شعب الایمان", en: "Branches of Faith", ar: "شعب الإيمان" } },
   { id: "imn1_04", title: { ur: "المودۃ الرحمانیۃ (ایمان و عمل صالح کا ثمرہ: مودت)", en: "Divine Love: Fruit of Faith & Good Deeds", ar: "المودة الرحمانية (ثمرة الإيمان والعمل الصالح)" } },
