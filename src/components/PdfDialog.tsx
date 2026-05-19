@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { Download, ExternalLink, FileText, X } from "lucide-react";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { ExternalLink, Eye, FileText, X } from "lucide-react";
 
 interface PdfDialogProps {
   open: boolean;
@@ -12,13 +11,10 @@ interface PdfDialogProps {
 }
 
 export function PdfDialog({ open, onOpenChange, url, page, title }: PdfDialogProps) {
-  const isMobile = useIsMobile();
-  const [iframeFailed, setIframeFailed] = useState(false);
-  const src = `${url}#page=${page ?? 1}&view=FitH`;
+  const src = `${url}#page=${page ?? 1}`;
 
   useEffect(() => {
     if (!open) return;
-    setIframeFailed(false);
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
@@ -26,12 +22,10 @@ export function PdfDialog({ open, onOpenChange, url, page, title }: PdfDialogPro
     };
   }, [open]);
 
-  const showFallback = isMobile || iframeFailed;
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="max-w-6xl w-[95vw] p-0 gap-0 overflow-hidden rounded-2xl border-primary/20 bg-background/95 backdrop-blur-md shadow-elegant"
+        className="z-50 max-w-6xl w-[95vw] p-0 gap-0 overflow-hidden rounded-2xl border-primary/20 bg-background/95 backdrop-blur-sm shadow-elegant"
       >
         <div className="flex items-center justify-between gap-3 border-b border-border/60 px-5 py-3">
           <div className="flex min-w-0 items-center gap-2">
@@ -50,39 +44,31 @@ export function PdfDialog({ open, onOpenChange, url, page, title }: PdfDialogPro
           </button>
         </div>
 
-        {showFallback ? (
-          <div className="flex flex-col items-center justify-center gap-5 p-10 text-center">
-            <FileText className="h-12 w-12 text-primary" />
-            <p className="max-w-sm text-sm text-muted-foreground">
-              Your device may not preview PDFs inline. Open or download the file to continue reading.
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              <a
-                href={src}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-full bg-gradient-gold px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-gold transition hover:opacity-90"
-              >
-                <ExternalLink className="h-4 w-4" /> Open PDF
-              </a>
-              <a
-                href={url}
-                download
-                className="inline-flex items-center gap-2 rounded-full glass px-5 py-2.5 text-sm font-medium text-foreground transition hover:ring-gold"
-              >
-                <Download className="h-4 w-4" /> Download
-              </a>
-            </div>
+        <div className="flex flex-col gap-3 p-4">
+          <a
+            href={src}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 self-center rounded-full border border-primary/30 bg-primary/5 px-4 py-1.5 text-xs sm:text-sm text-primary/90 transition hover:bg-primary/10"
+          >
+            <Eye className="h-3.5 w-3.5" />
+            PDF not loading? Click here to view directly
+            <ExternalLink className="h-3.5 w-3.5" />
+          </a>
+
+          <div className="w-full h-[75vh] min-h-[500px] flex items-center justify-center bg-muted/20 rounded-lg overflow-hidden border border-border">
+            {open && (
+              <object data={src} type="application/pdf" className="w-full h-full">
+                <iframe
+                  src={src}
+                  className="w-full h-full"
+                  frameBorder={0}
+                  title={title}
+                />
+              </object>
+            )}
           </div>
-        ) : (
-          <iframe
-            src={src}
-            title={title}
-            className="h-[80vh] w-full bg-background"
-            style={{ border: 0 }}
-            onError={() => setIframeFailed(true)}
-          />
-        )}
+        </div>
       </DialogContent>
     </Dialog>
   );
