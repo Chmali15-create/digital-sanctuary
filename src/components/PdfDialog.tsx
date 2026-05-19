@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Download, ExternalLink, FileText, X } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface PdfDialogProps {
   open: boolean;
