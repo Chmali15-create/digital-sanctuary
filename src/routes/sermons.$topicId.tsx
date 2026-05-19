@@ -30,7 +30,7 @@ export const Route = createFileRoute("/sermons/$topicId")({
     if (sub) {
       const topic: Topic = {
         id: sub.id,
-        title: { en: sub.title, ur: sub.title, ar: sub.title },
+        title: sub.title,
         description: { en: "", ur: "", ar: "" },
         count: 0,
       };
@@ -77,8 +77,8 @@ function TopicSermons() {
                 <span className="shrink-0 font-serif text-xs tabular-nums text-primary/70 pt-0.5">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <span className="flex-1 text-base leading-snug text-foreground sm:text-lg break-words" lang="ur">
-                  {sub.title}
+                <span className="flex-1 text-base leading-snug text-foreground sm:text-lg break-words">
+                  {tr(sub.title)}
                 </span>
                 <ArrowUpRight
                   className="h-4 w-4 shrink-0 text-foreground/40 transition group-hover:text-primary"
