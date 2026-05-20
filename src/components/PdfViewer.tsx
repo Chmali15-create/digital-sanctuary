@@ -5,22 +5,16 @@ interface PdfViewerProps {
 }
 
 export function PdfViewer({ url, title, page }: PdfViewerProps) {
-  const viewerSrc = `https://docs.google.com/gview?url=${url}&embedded=true${
-    page ? `#page=${page}` : ""
-  }`;
-
+  const src = page ? `${url}#page=${page}` : url;
   return (
     <div className="relative h-[calc(100vh-5rem)] w-full overflow-hidden rounded-3xl glass-strong shadow-elegant">
       <iframe
-        src={viewerSrc}
+        src={src}
         title={title}
-        className="absolute inset-0 h-full w-full rounded-3xl bg-background"
-        style={{ border: 0 }}
-      />
-      <embed
-        src={url}
-        type="application/pdf"
-        className="absolute inset-0 -z-10 h-full w-full rounded-3xl"
+        width="100%"
+        height="100%"
+        className="h-full w-full rounded-3xl bg-background"
+        style={{ border: "none" }}
       />
     </div>
   );
