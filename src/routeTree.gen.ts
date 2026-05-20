@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SermonsRouteImport } from './routes/sermons'
+import { Route as PdfViewerRouteImport } from './routes/pdf-viewer'
 import { Route as BooksRouteImport } from './routes/books'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SermonsIndexRouteImport } from './routes/sermons.index'
@@ -21,6 +22,11 @@ import { Route as BooksTopicIdBookIdRouteImport } from './routes/books.$topicId.
 const SermonsRoute = SermonsRouteImport.update({
   id: '/sermons',
   path: '/sermons',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PdfViewerRoute = PdfViewerRouteImport.update({
+  id: '/pdf-viewer',
+  path: '/pdf-viewer',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BooksRoute = BooksRouteImport.update({
@@ -62,6 +68,7 @@ const BooksTopicIdBookIdRoute = BooksTopicIdBookIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/books': typeof BooksRouteWithChildren
+  '/pdf-viewer': typeof PdfViewerRoute
   '/sermons': typeof SermonsRouteWithChildren
   '/books/$topicId': typeof BooksTopicIdRouteWithChildren
   '/sermons/$topicId': typeof SermonsTopicIdRouteWithChildren
@@ -72,6 +79,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/books': typeof BooksRouteWithChildren
+  '/pdf-viewer': typeof PdfViewerRoute
   '/books/$topicId': typeof BooksTopicIdRouteWithChildren
   '/sermons/$topicId': typeof SermonsTopicIdRouteWithChildren
   '/sermons': typeof SermonsIndexRoute
@@ -82,6 +90,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/books': typeof BooksRouteWithChildren
+  '/pdf-viewer': typeof PdfViewerRoute
   '/sermons': typeof SermonsRouteWithChildren
   '/books/$topicId': typeof BooksTopicIdRouteWithChildren
   '/sermons/$topicId': typeof SermonsTopicIdRouteWithChildren
@@ -94,6 +103,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/books'
+    | '/pdf-viewer'
     | '/sermons'
     | '/books/$topicId'
     | '/sermons/$topicId'
@@ -104,6 +114,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/books'
+    | '/pdf-viewer'
     | '/books/$topicId'
     | '/sermons/$topicId'
     | '/sermons'
@@ -113,6 +124,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/books'
+    | '/pdf-viewer'
     | '/sermons'
     | '/books/$topicId'
     | '/sermons/$topicId'
@@ -124,6 +136,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BooksRoute: typeof BooksRouteWithChildren
+  PdfViewerRoute: typeof PdfViewerRoute
   SermonsRoute: typeof SermonsRouteWithChildren
 }
 
@@ -134,6 +147,13 @@ declare module '@tanstack/react-router' {
       path: '/sermons'
       fullPath: '/sermons'
       preLoaderRoute: typeof SermonsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pdf-viewer': {
+      id: '/pdf-viewer'
+      path: '/pdf-viewer'
+      fullPath: '/pdf-viewer'
+      preLoaderRoute: typeof PdfViewerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/books': {
@@ -238,6 +258,7 @@ const SermonsRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BooksRoute: BooksRouteWithChildren,
+  PdfViewerRoute: PdfViewerRoute,
   SermonsRoute: SermonsRouteWithChildren,
 }
 export const routeTree = rootRouteImport
