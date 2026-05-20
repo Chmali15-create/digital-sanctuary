@@ -12,7 +12,7 @@ export interface ImanSubtopic {
 export const IMAN_PARENT_ID = "imn_01";
 
 export const IMAN_SUBTOPICS: ImanSubtopic[] = [
-  { id: "imn1_01", title: { ur: "تفصیل الدین (ایمان وعمل)", en: "Detail of Deen (Faith & Action)", ar: "تفصيل الدين (الإيمان والعمل)" }, reference: "خطبات حکیم الامت: 48/3", pdfUrl: "/KHUTBAAT_E_HAKEEM_UL_UMMAT_VOL_03.pdf", pdfPage: 48 },
+  { id: "imn1_01", title: { ur: "تفصیل الدین (ایمان وعمل)", en: "Detail of Deen (Faith & Action)", ar: "تفصيل الدين (الإيمان والعمل)" }, reference: "خطبات حکیم الامت: 48/3", pdfUrl: "https://github.com/Chmali15-create/digital-sanctuary/releases/download/v1.0/KHUTBAAT_E_HAKEEM_UL_UMMAT_VOL_03.pdf", pdfPage: 48 },
   { id: "imn1_02", title: { ur: "شرط الایمان", en: "Condition of Faith", ar: "شرط الإيمان" } },
   { id: "imn1_03", title: { ur: "شعب الایمان", en: "Branches of Faith", ar: "شعب الإيمان" } },
   { id: "imn1_04", title: { ur: "المودۃ الرحمانیۃ (ایمان و عمل صالح کا ثمرہ: مودت)", en: "Divine Love: Fruit of Faith & Good Deeds", ar: "المودة الرحمانية (ثمرة الإيمان والعمل الصالح)" } },
