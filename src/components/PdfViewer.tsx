@@ -5,7 +5,8 @@ interface PdfViewerProps {
 }
 
 export function PdfViewer({ url, title, page }: PdfViewerProps) {
-  const src = page ? `${url}#page=${page}` : url;
+  const hash = page ? `#page=${page}` : "";
+  const src = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(url)}${hash}`;
   return (
     <div className="relative h-[calc(100vh-5rem)] w-full overflow-hidden rounded-3xl glass-strong shadow-elegant">
       <iframe
