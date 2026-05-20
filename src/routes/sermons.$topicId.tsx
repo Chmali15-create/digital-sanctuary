@@ -8,8 +8,6 @@ import { IBADAT_SUBTOPICS, IBADAT_PARENT_ID } from "@/lib/ibadat-subtopics";
 import { IMAN_SUBTOPICS, IMAN_PARENT_ID } from "@/lib/iman-subtopics";
 import { useI18n } from "@/lib/i18n";
 import { BookMarked, Clock, ChevronRight, ArrowUpRight, BookOpen } from "lucide-react";
-import { useState } from "react";
-import { PdfDialog } from "@/components/PdfDialog";
 
 export const Route = createFileRoute("/sermons/$topicId")({
   loader: ({ params }): { topic: Topic; sermons: Sermon[] } => {
@@ -54,7 +52,6 @@ function NotFound() {
 function TopicSermons() {
   const { topic, sermons } = Route.useLoaderData() as { topic: Topic; sermons: Sermon[] };
   const { t, tr, dir } = useI18n();
-  const [pdfState, setPdfState] = useState<{ url: string; page?: number; title: string } | null>(null);
   const isImaniyat = topic.id === IMANIYAT_PARENT_ID;
   const isIbadat = topic.id === IBADAT_PARENT_ID;
   const isIman = topic.id === IMAN_PARENT_ID;
@@ -113,15 +110,15 @@ function TopicSermons() {
               );
               if (pdfUrl) {
                 return (
-                  <button
+                  <Link
                     key={sub.id}
-                    type="button"
-                    onClick={() => setPdfState({ url: pdfUrl, page: pdfPage, title: tr(sub.title) })}
-                    className={`${commonClass} text-start w-full`}
+                    to="/pdf-viewer"
+                    search={{ url: pdfUrl, page: pdfPage, title: tr(sub.title) }}
+                    className={commonClass}
                     style={{ animationDelay: `${i * 30}ms` }}
                   >
                     {inner}
-                  </button>
+                  </Link>
                 );
               }
               return (
@@ -137,15 +134,6 @@ function TopicSermons() {
               );
             })}
           </div>
-        )}
-        {pdfState && (
-          <PdfDialog
-            open={!!pdfState}
-            onOpenChange={(o) => !o && setPdfState(null)}
-            url={pdfState.url}
-            page={pdfState.page}
-            title={pdfState.title}
-          />
         )}
         {!subList && sermons.length === 0 && (
           <div className="rounded-3xl glass p-10 text-center animate-fade-up">
