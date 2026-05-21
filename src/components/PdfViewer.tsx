@@ -104,6 +104,7 @@ export function PdfViewer({ url, title, page, pageOffset = 0 }: PdfViewerProps) 
     let cancelled = false;
     let loadingTask: { promise: Promise<PDFDocumentProxy>; destroy: () => Promise<void> } | null = null;
     let renderTask: RenderTask | null = null;
+    const pdfBlobUrl = blobUrl;
 
     async function renderPdfPage() {
       const canvas = canvasRef.current;
@@ -117,7 +118,7 @@ export function PdfViewer({ url, title, page, pageOffset = 0 }: PdfViewerProps) 
         const pdfjsLib = await import("pdfjs-dist");
         pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
-        const task = pdfjsLib.getDocument({ url: blobUrl });
+        const task = pdfjsLib.getDocument({ url: pdfBlobUrl });
         loadingTask = task;
         const pdf = await task.promise;
         if (cancelled) return;
@@ -147,7 +148,7 @@ export function PdfViewer({ url, title, page, pageOffset = 0 }: PdfViewerProps) 
         context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
         context.clearRect(0, 0, viewport.width, viewport.height);
 
-        const taskRender = pdfPage.render({ canvasContext: context, viewport });
+        const taskRender = pdfPage.render({ canvas, canvasContext: context, viewport });
         renderTask = taskRender;
         await taskRender.promise;
       } catch (error) {
