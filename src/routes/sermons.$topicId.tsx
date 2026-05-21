@@ -89,7 +89,7 @@ function TopicSermons() {
                     </span>
                     <span
                       className="min-w-0 flex-1 text-base leading-snug text-foreground sm:text-lg"
-                      style={{ wordBreak: "normal", overflowWrap: "break-word" }}
+                      style={{ wordBreak: "keep-all", whiteSpace: "normal", overflowWrap: "break-word" }}
                     >
                       {tr(sub.title)}
                     </span>
