@@ -19,7 +19,7 @@ export const IMAN_PARENT_ID = "imn_01";
 
 export const IMAN_SUBTOPICS: ImanSubtopic[] = [
   { id: "imn1_01", title: { ur: "تفصیل الدین (ایمان وعمل)", en: "Detail of Deen (Faith & Action)", ar: "تفصيل الدين (الإيمان والعمل)" }, reference: "خطبات حکیم الامت: 3/48", pdfUrl: "https://raw.githubusercontent.com/Chmali15-create/digital-sanctuary/main/public/KHUTBAAT_E_HAKEEM_UL_UMMAT_VOL_03.pdf", pdfPage: 48, pdfPageOffset: 1 },
-  { id: "imn1_02", title: { ur: "شرط الایمان", en: "Condition of Faith", ar: "شرط الإيمان" }, reference: "خطبات حکیم الامت: 6/176" },
+  { id: "imn1_02", title: { ur: "شرط الایمان", en: "Condition of Faith", ar: "شرط الإيمان" }, reference: "خطبات حکیم الامت: 6/176", pdfUrl: "https://github.com/Chmali15-create/digital-sanctuary/releases/download/v3.0/KHUTBAAT_E_HAKEEM_UL_UMMAT_VOL_06_compressed.pdf", pdfPage: 177, pdfPageOffset: 1 },
   { id: "imn1_03", title: { ur: "شعب الایمان", en: "Branches of Faith", ar: "شعب الإيمان" }, reference: "خطبات حکیم الامت: 6/195" },
   { id: "imn1_04", title: { ur: "المودۃ الرحمانیہ (ایمان و عمل صالح کا ثمرہ: مودت)", en: "Divine Love: Fruit of Faith & Good Deeds", ar: "المودة الرحمانية (ثمرة الإيمان والعمل الصالح)" }, reference: "خطبات حکیم الامت: 14/354" },
   { id: "imn1_05", title: { ur: "طریق الاقرب (قرب الہی کا ذریعہ: ایمان و عمل صالح)", en: "Path of Nearness to Allah: Faith & Good Deeds", ar: "طريق القرب (الإيمان والعمل الصالح)" }, reference: "خطبات حکیم الامت: 15/113" },
