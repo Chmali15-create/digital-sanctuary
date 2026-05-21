@@ -13,10 +13,6 @@ interface PdfViewerProps {
   pageOffset?: number;
 }
 
-type PdfFile = { data: Uint8Array } | null;
-type ReactPdfModule = typeof import("react-pdf");
-type PdfDocumentProps = ComponentProps<ReactPdfModule["Document"]>;
-
 export function PdfViewer({ url, title, page, pageOffset = 0 }: PdfViewerProps) {
   const [blobUrl, setBlobUrl] = useState<string | null>(null);
   const [isFetching, setIsFetching] = useState(true);
