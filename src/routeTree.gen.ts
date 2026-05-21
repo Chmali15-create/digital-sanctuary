@@ -18,6 +18,7 @@ import { Route as SermonsTopicIdRouteImport } from './routes/sermons.$topicId'
 import { Route as BooksTopicIdRouteImport } from './routes/books.$topicId'
 import { Route as SermonsTopicIdSermonIdRouteImport } from './routes/sermons.$topicId.$sermonId'
 import { Route as BooksTopicIdBookIdRouteImport } from './routes/books.$topicId.$bookId'
+import { Route as ApiPublicPdfProxyRouteImport } from './routes/api/public/pdf-proxy'
 
 const SermonsRoute = SermonsRouteImport.update({
   id: '/sermons',
@@ -64,6 +65,11 @@ const BooksTopicIdBookIdRoute = BooksTopicIdBookIdRouteImport.update({
   path: '/$bookId',
   getParentRoute: () => BooksTopicIdRoute,
 } as any)
+const ApiPublicPdfProxyRoute = ApiPublicPdfProxyRouteImport.update({
+  id: '/api/public/pdf-proxy',
+  path: '/api/public/pdf-proxy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -73,6 +79,7 @@ export interface FileRoutesByFullPath {
   '/books/$topicId': typeof BooksTopicIdRouteWithChildren
   '/sermons/$topicId': typeof SermonsTopicIdRouteWithChildren
   '/sermons/': typeof SermonsIndexRoute
+  '/api/public/pdf-proxy': typeof ApiPublicPdfProxyRoute
   '/books/$topicId/$bookId': typeof BooksTopicIdBookIdRoute
   '/sermons/$topicId/$sermonId': typeof SermonsTopicIdSermonIdRoute
 }
@@ -83,6 +90,7 @@ export interface FileRoutesByTo {
   '/books/$topicId': typeof BooksTopicIdRouteWithChildren
   '/sermons/$topicId': typeof SermonsTopicIdRouteWithChildren
   '/sermons': typeof SermonsIndexRoute
+  '/api/public/pdf-proxy': typeof ApiPublicPdfProxyRoute
   '/books/$topicId/$bookId': typeof BooksTopicIdBookIdRoute
   '/sermons/$topicId/$sermonId': typeof SermonsTopicIdSermonIdRoute
 }
@@ -95,6 +103,7 @@ export interface FileRoutesById {
   '/books/$topicId': typeof BooksTopicIdRouteWithChildren
   '/sermons/$topicId': typeof SermonsTopicIdRouteWithChildren
   '/sermons/': typeof SermonsIndexRoute
+  '/api/public/pdf-proxy': typeof ApiPublicPdfProxyRoute
   '/books/$topicId/$bookId': typeof BooksTopicIdBookIdRoute
   '/sermons/$topicId/$sermonId': typeof SermonsTopicIdSermonIdRoute
 }
@@ -108,6 +117,7 @@ export interface FileRouteTypes {
     | '/books/$topicId'
     | '/sermons/$topicId'
     | '/sermons/'
+    | '/api/public/pdf-proxy'
     | '/books/$topicId/$bookId'
     | '/sermons/$topicId/$sermonId'
   fileRoutesByTo: FileRoutesByTo
@@ -118,6 +128,7 @@ export interface FileRouteTypes {
     | '/books/$topicId'
     | '/sermons/$topicId'
     | '/sermons'
+    | '/api/public/pdf-proxy'
     | '/books/$topicId/$bookId'
     | '/sermons/$topicId/$sermonId'
   id:
@@ -129,6 +140,7 @@ export interface FileRouteTypes {
     | '/books/$topicId'
     | '/sermons/$topicId'
     | '/sermons/'
+    | '/api/public/pdf-proxy'
     | '/books/$topicId/$bookId'
     | '/sermons/$topicId/$sermonId'
   fileRoutesById: FileRoutesById
@@ -138,6 +150,7 @@ export interface RootRouteChildren {
   BooksRoute: typeof BooksRouteWithChildren
   PdfViewerRoute: typeof PdfViewerRoute
   SermonsRoute: typeof SermonsRouteWithChildren
+  ApiPublicPdfProxyRoute: typeof ApiPublicPdfProxyRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -205,6 +218,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BooksTopicIdBookIdRouteImport
       parentRoute: typeof BooksTopicIdRoute
     }
+    '/api/public/pdf-proxy': {
+      id: '/api/public/pdf-proxy'
+      path: '/api/public/pdf-proxy'
+      fullPath: '/api/public/pdf-proxy'
+      preLoaderRoute: typeof ApiPublicPdfProxyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -260,6 +280,7 @@ const rootRouteChildren: RootRouteChildren = {
   BooksRoute: BooksRouteWithChildren,
   PdfViewerRoute: PdfViewerRoute,
   SermonsRoute: SermonsRouteWithChildren,
+  ApiPublicPdfProxyRoute: ApiPublicPdfProxyRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
