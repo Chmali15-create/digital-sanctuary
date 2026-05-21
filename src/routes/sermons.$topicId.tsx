@@ -79,6 +79,7 @@ function TopicSermons() {
               const reference = (sub as { reference?: string }).reference;
               const pdfUrl = (sub as { pdfUrl?: string }).pdfUrl;
               const pdfPage = (sub as { pdfPage?: number }).pdfPage;
+              const pdfPageOffset = (sub as { pdfPageOffset?: number }).pdfPageOffset;
               const commonClass = `group relative flex items-start justify-between gap-3 rounded-2xl glass p-4 transition duration-300 hover:-translate-y-0.5 hover:ring-gold sm:p-5 animate-fade-up ${dir === "rtl" ? "text-right" : "text-left"}`;
               const inner = (
                 <>
@@ -113,7 +114,7 @@ function TopicSermons() {
                   <Link
                     key={sub.id}
                     to="/pdf-viewer"
-                    search={{ url: pdfUrl, page: pdfPage, title: tr(sub.title) }}
+                    search={{ url: pdfUrl, page: pdfPage, pageOffset: pdfPageOffset, title: tr(sub.title) }}
                     className={commonClass}
                     style={{ animationDelay: `${i * 30}ms` }}
                   >
