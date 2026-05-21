@@ -32,6 +32,7 @@ export function PdfViewer({ url, title, page, pageOffset = 0 }: PdfViewerProps) 
   useEffect(() => {
     const controller = new AbortController();
     let objectUrl: string | null = null;
+    const proxiedSource = `/api/public/pdf-proxy?url=${encodeURIComponent(sourceUrl)}`;
 
     async function loadPdf() {
       setIsFetching(true);
@@ -42,7 +43,7 @@ export function PdfViewer({ url, title, page, pageOffset = 0 }: PdfViewerProps) 
       });
 
       try {
-        const response = await fetch(sourceUrl, { signal: controller.signal });
+        const response = await fetch(proxiedSource, { signal: controller.signal });
 
         if (!response.ok) {
           throw new Error(`Unable to load PDF (${response.status})`);
