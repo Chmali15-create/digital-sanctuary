@@ -27,14 +27,14 @@ export function PdfViewer({ url, title, page, pageOffset = 0 }: PdfViewerProps) 
       </div>
 
       <div className="relative h-[calc(100%-3rem)] bg-background/70">
-        <iframe
+        <embed
           key={iframeSrc}
           src={iframeSrc}
+          type="application/pdf"
           title={title}
           width="100%"
           height="100%"
-          style={{ border: "none" }}
-          className="h-full w-full bg-background"
+          className="h-full w-full rounded-lg bg-background"
         />
       </div>
     </div>
