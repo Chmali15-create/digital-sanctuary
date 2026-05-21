@@ -1,13 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import type { ComponentProps } from "react";
 import { ExternalLink, Loader2 } from "lucide-react";
-import { Document, Page, pdfjs } from "react-pdf";
-import "react-pdf/dist/Page/AnnotationLayer.css";
-import "react-pdf/dist/Page/TextLayer.css";
-
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-  "pdfjs-dist/build/pdf.worker.min.mjs",
-  import.meta.url,
-).toString();
 
 interface PdfViewerProps {
   url: string;
@@ -22,6 +15,8 @@ interface PdfViewerProps {
 }
 
 type PdfFile = { data: Uint8Array } | null;
+type ReactPdfModule = typeof import("react-pdf");
+type PdfDocumentProps = ComponentProps<ReactPdfModule["Document"]>;
 
 export function PdfViewer({ url, title, page, pageOffset = 0 }: PdfViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -30,10 +25,40 @@ export function PdfViewer({ url, title, page, pageOffset = 0 }: PdfViewerProps) 
   const [containerWidth, setContainerWidth] = useState(720);
   const [isFetching, setIsFetching] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [reactPdf, setReactPdf] = useState<Pick<ReactPdfModule, "Document" | "Page">>();
 
   const appPage = Math.max(1, page ?? 49);
   const targetPage = Math.max(1, appPage + pageOffset);
   const renderedPage = numPages ? Math.min(targetPage, numPages) : targetPage;
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadRenderer() {
+      try {
+        const module = await import("react-pdf");
+        module.pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+          "pdfjs-dist/build/pdf.worker.min.mjs",
+          import.meta.url,
+        ).toString();
+
+        if (isMounted) {
+          setReactPdf({ Document: module.Document, Page: module.Page });
+        }
+      } catch (error) {
+        if (isMounted) {
+          console.error("PDF renderer failed", error);
+          setHasError(true);
+          setIsFetching(false);
+        }
+      }
+    }
+
+    void loadRenderer();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -89,6 +114,8 @@ export function PdfViewer({ url, title, page, pageOffset = 0 }: PdfViewerProps) 
   }, []);
 
   const directHref = `${url}#page=${targetPage}`;
+  const Document = reactPdf?.Document;
+  const Page = reactPdf?.Page;
 
   return (
     <div className="relative h-[calc(100vh-5rem)] w-full overflow-hidden rounded-3xl glass-strong shadow-elegant">
@@ -100,7 +127,7 @@ export function PdfViewer({ url, title, page, pageOffset = 0 }: PdfViewerProps) 
       </div>
 
       <div ref={containerRef} className="h-[calc(100%-3rem)] overflow-auto bg-background/70 px-3 py-5">
-        {isFetching && !hasError && (
+        {(!Document || !Page || isFetching) && !hasError && (
           <div className="flex h-full flex-col items-center justify-center gap-3 text-muted-foreground">
             <Loader2 className="h-7 w-7 animate-spin text-primary" />
             <p className="font-serif text-lg text-foreground">Preparing your reading...</p>
@@ -109,12 +136,12 @@ export function PdfViewer({ url, title, page, pageOffset = 0 }: PdfViewerProps) 
 
         {!isFetching && hasError && <PdfFallback href={directHref} title={title} />}
 
-        {!hasError && pdfFile && (
+        {!hasError && pdfFile && Document && Page && (
           <Document
             file={pdfFile}
             loading={null}
             error={<PdfFallback href={directHref} title={title} />}
-            onLoadSuccess={({ numPages: loadedPages }) => {
+            onLoadSuccess={({ numPages: loadedPages }: Parameters<NonNullable<PdfDocumentProps["onLoadSuccess"]>>[0]) => {
               setNumPages(loadedPages);
               setHasError(false);
             }}
@@ -127,8 +154,8 @@ export function PdfViewer({ url, title, page, pageOffset = 0 }: PdfViewerProps) 
             <Page
               pageNumber={renderedPage}
               width={containerWidth}
-              renderAnnotationLayer
-              renderTextLayer
+              renderAnnotationLayer={false}
+              renderTextLayer={false}
               loading={
                 <div className="flex min-h-[60vh] items-center justify-center text-muted-foreground">
                   <Loader2 className="h-7 w-7 animate-spin text-primary" />
