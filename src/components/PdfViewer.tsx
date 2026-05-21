@@ -23,7 +23,7 @@ export function PdfViewer({ url, title, page, pageOffset = 0 }: PdfViewerProps) 
 
   const appPage = Math.max(1, page ?? 49);
   const targetPage = Math.max(1, appPage + pageOffset);
-  const sourceUrl = url || PDF_SOURCE_URL;
+  const sourceUrl = PDF_SOURCE_URL;
   const iframeSrc = useMemo(
     () => (blobUrl ? `${blobUrl}#page=${targetPage}&view=FitH` : null),
     [blobUrl, targetPage],
