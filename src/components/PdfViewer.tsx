@@ -14,7 +14,7 @@ interface PdfViewerProps {
 }
 
 export const PDF_SOURCE_URL =
-  "https://github.com/Chmali15-create/digital-sanctuary/releases/download/v2.0/KHUTBAAT_E_HAKEEM_UL_UMMAT_VOL_03.pdf";
+  "https://github.com/Chmali15-create/digital-sanctuary/releases/download/v2.0/KHUTBAAT_E_HAKEEM_UL_UMMAT_VOL_03_compressed.pdf";
 
 export function PdfViewer({ url, title, page, pageOffset = 0 }: PdfViewerProps) {
   const [blobUrl, setBlobUrl] = useState<string | null>(null);
@@ -23,7 +23,7 @@ export function PdfViewer({ url, title, page, pageOffset = 0 }: PdfViewerProps) 
 
   const appPage = Math.max(1, page ?? 49);
   const targetPage = Math.max(1, appPage + pageOffset);
-  const sourceUrl = PDF_SOURCE_URL;
+  const sourceUrl = url || PDF_SOURCE_URL;
   const iframeSrc = useMemo(
     () => (blobUrl ? `${blobUrl}#page=${targetPage}&view=FitH` : null),
     [blobUrl, targetPage],

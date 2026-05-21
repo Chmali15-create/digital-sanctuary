@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { AmbientBackground } from "@/components/AmbientBackground";
-import { PDF_SOURCE_URL, PdfViewer } from "@/components/PdfViewer";
+import { PdfViewer } from "@/components/PdfViewer";
 import { useI18n } from "@/lib/i18n";
 
 interface PdfSearch {
@@ -57,7 +57,7 @@ function PdfViewerPage() {
           </div>
           {url && (
             <a
-              href={PDF_SOURCE_URL}
+              href={url}
               target="_blank"
               rel="noopener noreferrer"
               className="hidden sm:inline-flex items-center gap-1.5 rounded-full glass px-3 py-1.5 text-xs text-foreground hover:ring-gold"
