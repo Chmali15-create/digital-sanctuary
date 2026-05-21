@@ -1,8 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { AmbientBackground } from "@/components/AmbientBackground";
-import { PdfViewer } from "@/components/PdfViewer";
 import { useI18n } from "@/lib/i18n";
+
+const SECURE_PDF_SOURCE = "https://github.com/Chmali15-create/digital-sanctuary/releases/download/v3.0/KHUTBAAT_E_HAKEEM_UL_UMMAT_VOL_06_compressed.pdf";
+const SECURE_PDF_EMBED_SRC = "https://github.com/Chmali15-create/digital-sanctuary/releases/download/v3.0/KHUTBAAT_E_HAKEEM_UL_UMMAT_VOL_06_compressed.pdf#page=177&zoom=80";
 
 interface PdfSearch {
   url: string;
@@ -28,10 +30,10 @@ export const Route = createFileRoute("/pdf-viewer")({
 });
 
 function PdfViewerPage() {
-  const { url, title, page, pageOffset } = Route.useSearch();
+  const { title } = Route.useSearch();
   const navigate = useNavigate();
   const { t, dir } = useI18n();
-  const displayTitle = title || "Document";
+  const displayTitle = title || "شرط الایمان";
 
   return (
     <div className="relative min-h-screen">
@@ -55,27 +57,24 @@ function PdfViewerPage() {
               {displayTitle}
             </h1>
           </div>
-          {url && (
-            <a
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden sm:inline-flex items-center gap-1.5 rounded-full glass px-3 py-1.5 text-xs text-foreground hover:ring-gold"
-            >
-              {t("tryDirect")} <ExternalLink className="h-3 w-3" />
-            </a>
-          )}
+          <a
+            href={SECURE_PDF_SOURCE}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden sm:inline-flex items-center gap-1.5 rounded-full glass px-3 py-1.5 text-xs text-foreground hover:ring-gold"
+          >
+            {t("tryDirect")} <ExternalLink className="h-3 w-3" />
+          </a>
         </div>
       </div>
       <main className="relative z-10 mx-auto max-w-7xl px-3 py-4 sm:px-6">
-        {url ? (
-          <PdfViewer url={url} title={displayTitle} page={page} pageOffset={pageOffset} />
-        ) : (
-          <div className="rounded-3xl glass p-10 text-center">
-            <p className="font-serif text-xl text-foreground">{t("unableLoad")}</p>
-            <p className="mt-2 text-sm text-muted-foreground">No PDF URL was provided.</p>
-          </div>
-        )}
+        <div key="pdf-secure-stream" className="w-full h-[calc(100vh-130px)] bg-[#15110E] overflow-hidden rounded-xl border border-[#2C221E] shadow-2xl">
+          <embed
+            src={SECURE_PDF_EMBED_SRC}
+            type="application/pdf"
+            className="w-full h-full border-none"
+          />
+        </div>
       </main>
     </div>
   );
