@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ExternalLink, Loader2 } from "lucide-react";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
@@ -35,16 +35,7 @@ export function PdfViewer({ url, title, page, pageOffset = 0 }: PdfViewerProps) 
   const targetPage = Math.max(1, appPage + pageOffset);
   const renderedPage = numPages ? Math.min(targetPage, numPages) : targetPage;
 
-  const documentOptions = useMemo(
-    () => ({
-      cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
-      cMapPacked: true,
-      standardFontDataUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/standard_fonts/`,
-    }),
-    [],
-  );
-
-  const loadPdf = useCallback(async () => {
+  useEffect(() => {
     const controller = new AbortController();
 
     setIsFetching(true);
@@ -52,39 +43,37 @@ export function PdfViewer({ url, title, page, pageOffset = 0 }: PdfViewerProps) 
     setPdfFile(null);
     setNumPages(undefined);
 
-    try {
-      const response = await fetch(url, {
-        mode: "cors",
-        cache: "force-cache",
-        signal: controller.signal,
-      });
+    async function loadPdf() {
+      try {
+        const response = await fetch(url, {
+          mode: "cors",
+          cache: "force-cache",
+          signal: controller.signal,
+        });
 
-      if (!response.ok) {
-        throw new Error(`PDF request failed with ${response.status}`);
-      }
+        if (!response.ok) {
+          throw new Error(`PDF request failed with ${response.status}`);
+        }
 
-      const buffer = await response.arrayBuffer();
-      setPdfFile({ data: new Uint8Array(buffer) });
-    } catch (error) {
-      if (!controller.signal.aborted) {
-        console.error("PDF render failed", error);
-        setHasError(true);
-      }
-    } finally {
-      if (!controller.signal.aborted) {
-        setIsFetching(false);
+        const buffer = await response.arrayBuffer();
+        setPdfFile({ data: new Uint8Array(buffer) });
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          console.error("PDF render failed", error);
+          setHasError(true);
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setIsFetching(false);
+        }
       }
     }
 
-    return () => controller.abort();
-  }, [url]);
-
-  useEffect(() => {
-    const abortLoad = loadPdf();
+    void loadPdf();
     return () => {
-      void abortLoad.then((abort) => abort?.());
+      controller.abort();
     };
-  }, [loadPdf]);
+  }, [url]);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -123,7 +112,6 @@ export function PdfViewer({ url, title, page, pageOffset = 0 }: PdfViewerProps) 
         {!hasError && pdfFile && (
           <Document
             file={pdfFile}
-            options={documentOptions}
             loading={null}
             error={<PdfFallback href={directHref} title={title} />}
             onLoadSuccess={({ numPages: loadedPages }) => {
