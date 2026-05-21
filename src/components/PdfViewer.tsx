@@ -20,6 +20,7 @@ interface PdfViewerProps {
 
 export function PdfViewer({ url, title, page, pageOffset = 0 }: PdfViewerProps) {
   const initialPage = page ? Math.max(1, page + pageOffset) : 1;
+  const proxiedUrl = `/api/public/pdf-proxy?url=${encodeURIComponent(url)}`;
   const [numPages, setNumPages] = useState<number>(0);
   const [current, setCurrent] = useState<number>(initialPage);
   const [width, setWidth] = useState<number>(800);
@@ -46,7 +47,7 @@ export function PdfViewer({ url, title, page, pageOffset = 0 }: PdfViewerProps) 
     >
       <div className="flex min-h-full flex-col items-center justify-start gap-4 p-4">
         <Document
-          file={url}
+          file={proxiedUrl}
           onLoadSuccess={({ numPages: n }) => setNumPages(n)}
           loading={
             <div className="flex items-center gap-2 py-20 text-muted-foreground">
