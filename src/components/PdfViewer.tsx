@@ -1,6 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import type { ComponentProps } from "react";
-import { ExternalLink, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Loader2 } from "lucide-react";
 
 interface PdfViewerProps {
   url: string;
@@ -14,180 +13,84 @@ interface PdfViewerProps {
   pageOffset?: number;
 }
 
-type PdfFile = { data: Uint8Array } | null;
-type ReactPdfModule = typeof import("react-pdf");
-type PdfDocumentProps = ComponentProps<ReactPdfModule["Document"]>;
-
 export function PdfViewer({ url, title, page, pageOffset = 0 }: PdfViewerProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [pdfFile, setPdfFile] = useState<PdfFile>(null);
-  const [numPages, setNumPages] = useState<number>();
-  const [containerWidth, setContainerWidth] = useState(720);
+  const [blobUrl, setBlobUrl] = useState<string | null>(null);
   const [isFetching, setIsFetching] = useState(true);
   const [hasError, setHasError] = useState(false);
-  const [reactPdf, setReactPdf] = useState<Pick<ReactPdfModule, "Document" | "Page">>();
 
   const appPage = Math.max(1, page ?? 49);
   const targetPage = Math.max(1, appPage + pageOffset);
-  const renderedPage = numPages ? Math.min(targetPage, numPages) : targetPage;
-
-  useEffect(() => {
-    let isMounted = true;
-
-    async function loadRenderer() {
-      try {
-        const module = await import("react-pdf");
-        module.pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-          "pdfjs-dist/build/pdf.worker.min.mjs",
-          import.meta.url,
-        ).toString();
-
-        if (isMounted) {
-          setReactPdf({ Document: module.Document, Page: module.Page });
-        }
-      } catch (error) {
-        if (isMounted) {
-          console.error("PDF renderer failed", error);
-          setHasError(true);
-          setIsFetching(false);
-        }
-      }
-    }
-
-    void loadRenderer();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
 
   useEffect(() => {
     const controller = new AbortController();
+    let createdUrl: string | null = null;
 
     setIsFetching(true);
     setHasError(false);
-    setPdfFile(null);
-    setNumPages(undefined);
+    setBlobUrl(null);
 
     async function loadPdf() {
+      const proxyUrl = `/api/public/pdf-proxy?url=${encodeURIComponent(url)}`;
       try {
-        const response = await fetch(url, {
-          mode: "cors",
-          cache: "force-cache",
-          signal: controller.signal,
-        });
-
-        if (!response.ok) {
-          throw new Error(`PDF request failed with ${response.status}`);
-        }
-
+        const response = await fetch(proxyUrl, { signal: controller.signal });
+        if (!response.ok) throw new Error(`Proxy responded ${response.status}`);
         const buffer = await response.arrayBuffer();
-        setPdfFile({ data: new Uint8Array(buffer) });
+        const blob = new Blob([buffer], { type: "application/pdf" });
+        createdUrl = URL.createObjectURL(blob);
+        setBlobUrl(createdUrl);
       } catch (error) {
         if (!controller.signal.aborted) {
-          console.error("PDF render failed", error);
+          console.error("PDF stream failed", error);
           setHasError(true);
         }
       } finally {
-        if (!controller.signal.aborted) {
-          setIsFetching(false);
-        }
+        if (!controller.signal.aborted) setIsFetching(false);
       }
     }
 
     void loadPdf();
     return () => {
       controller.abort();
+      if (createdUrl) URL.revokeObjectURL(createdUrl);
     };
   }, [url]);
 
-  useEffect(() => {
-    if (!containerRef.current) return;
-
-    const resizeObserver = new ResizeObserver(([entry]) => {
-      if (entry) {
-        setContainerWidth(Math.max(320, Math.min(entry.contentRect.width - 32, 980)));
-      }
-    });
-
-    resizeObserver.observe(containerRef.current);
-    return () => resizeObserver.disconnect();
-  }, []);
-
-  const directHref = `${url}#page=${targetPage}`;
-  const Document = reactPdf?.Document;
-  const Page = reactPdf?.Page;
+  const iframeSrc = blobUrl ? `${blobUrl}#page=${targetPage}&view=FitH` : null;
 
   return (
     <div className="relative h-[calc(100vh-5rem)] w-full overflow-hidden rounded-3xl glass-strong shadow-elegant">
       <div className="flex h-12 items-center justify-between border-b border-border/40 px-4">
         <p className="text-xs uppercase tracking-[0.2em] text-primary/80">Page {appPage}</p>
-        <p className="text-xs text-muted-foreground">
-          {numPages ? `${renderedPage} / ${numPages}` : `Opening page ${targetPage}`}
-        </p>
+        <p className="text-xs text-muted-foreground truncate max-w-[60%]">{title}</p>
       </div>
 
-      <div ref={containerRef} className="h-[calc(100%-3rem)] overflow-auto bg-background/70 px-3 py-5">
-        {(!Document || !Page || isFetching) && !hasError && (
-          <div className="flex h-full flex-col items-center justify-center gap-3 text-muted-foreground">
+      <div className="relative h-[calc(100%-3rem)] bg-background/70">
+        {isFetching && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-muted-foreground">
             <Loader2 className="h-7 w-7 animate-spin text-primary" />
             <p className="font-serif text-lg text-foreground">Preparing your reading...</p>
           </div>
         )}
 
-        {!isFetching && hasError && <PdfFallback href={directHref} title={title} />}
-
-        {!hasError && pdfFile && Document && Page && (
-          <Document
-            file={pdfFile}
-            loading={null}
-            error={<PdfFallback href={directHref} title={title} />}
-            onLoadSuccess={({ numPages: loadedPages }: Parameters<NonNullable<PdfDocumentProps["onLoadSuccess"]>>[0]) => {
-              setNumPages(loadedPages);
-              setHasError(false);
-            }}
-            onLoadError={(error) => {
-              console.error("PDF canvas render failed", error);
-              setHasError(true);
-            }}
-            className="mx-auto flex min-h-full justify-center"
-          >
-            <Page
-              pageNumber={renderedPage}
-              width={containerWidth}
-              renderAnnotationLayer={false}
-              renderTextLayer={false}
-              loading={
-                <div className="flex min-h-[60vh] items-center justify-center text-muted-foreground">
-                  <Loader2 className="h-7 w-7 animate-spin text-primary" />
-                </div>
-              }
-              className="overflow-hidden rounded-2xl shadow-elegant"
-            />
-          </Document>
+        {hasError && !isFetching && (
+          <div className="absolute inset-0 flex items-center justify-center px-6 text-center">
+            <p className="font-serif text-lg text-foreground">
+              We couldn't stream the PDF right now. Please try again in a moment.
+            </p>
+          </div>
         )}
-      </div>
-    </div>
-  );
-}
 
-function PdfFallback({ href, title }: { href: string; title: string }) {
-  return (
-    <div className="flex h-full flex-col items-center justify-center px-6 text-center">
-      <div className="max-w-md rounded-3xl glass p-8 shadow-elegant">
-        <p className="font-serif text-2xl font-semibold text-foreground">Open the PDF directly</p>
-        <p className="mt-3 text-sm leading-6 text-muted-foreground">
-          Your browser blocked the in-app PDF stream, but the document can still be opened cleanly in a new tab.
-        </p>
-        <a
-          href={href}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={`Open ${title} in a new tab`}
-          className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-gradient-gold px-6 py-3 text-sm font-semibold text-primary-foreground shadow-gold transition hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-        >
-          Open PDF in New Tab
-          <ExternalLink className="h-4 w-4" />
-        </a>
+        {iframeSrc && !hasError && (
+          <iframe
+            key={iframeSrc}
+            src={iframeSrc}
+            title={title}
+            width="100%"
+            height="100%"
+            style={{ border: "none" }}
+            className="h-full w-full bg-background"
+          />
+        )}
       </div>
     </div>
   );
