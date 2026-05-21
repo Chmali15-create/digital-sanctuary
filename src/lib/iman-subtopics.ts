@@ -7,6 +7,12 @@ export interface ImanSubtopic {
   reference?: string;
   pdfUrl?: string;
   pdfPage?: number;
+  /**
+   * Front-matter offset: how many pages precede the book's own page 1
+   * inside the PDF (cover + TOC etc). Our UI always treats the very
+   * first page of the PDF as "Page 1".
+   */
+  pdfPageOffset?: number;
 }
 
 export const IMAN_PARENT_ID = "imn_01";

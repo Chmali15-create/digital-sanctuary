@@ -8,6 +8,7 @@ interface PdfSearch {
   url: string;
   title?: string;
   page?: number;
+  pageOffset?: number;
 }
 
 export const Route = createFileRoute("/pdf-viewer")({
@@ -15,6 +16,7 @@ export const Route = createFileRoute("/pdf-viewer")({
     url: String(search.url ?? ""),
     title: search.title ? String(search.title) : undefined,
     page: search.page ? Number(search.page) : undefined,
+    pageOffset: search.pageOffset !== undefined ? Number(search.pageOffset) : undefined,
   }),
   head: () => ({
     meta: [
@@ -26,7 +28,7 @@ export const Route = createFileRoute("/pdf-viewer")({
 });
 
 function PdfViewerPage() {
-  const { url, title, page } = Route.useSearch();
+  const { url, title, page, pageOffset } = Route.useSearch();
   const navigate = useNavigate();
   const { t, dir } = useI18n();
   const displayTitle = title || "Document";
@@ -67,7 +69,7 @@ function PdfViewerPage() {
       </div>
       <main className="relative z-10 mx-auto max-w-7xl px-3 py-4 sm:px-6">
         {url ? (
-          <PdfViewer url={url} title={displayTitle} page={page} />
+          <PdfViewer url={url} title={displayTitle} page={page} pageOffset={pageOffset} />
         ) : (
           <div className="rounded-3xl glass p-10 text-center">
             <p className="font-serif text-xl text-foreground">{t("unableLoad")}</p>
