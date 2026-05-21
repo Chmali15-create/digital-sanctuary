@@ -80,38 +80,32 @@ function TopicSermons() {
               const pdfUrl = (sub as { pdfUrl?: string }).pdfUrl;
               const pdfPage = (sub as { pdfPage?: number }).pdfPage;
               const pdfPageOffset = (sub as { pdfPageOffset?: number }).pdfPageOffset;
-              const commonClass = `group relative flex flex-col gap-2 rounded-2xl glass p-4 transition duration-300 hover:-translate-y-0.5 hover:ring-gold sm:p-5 animate-fade-up ${dir === "rtl" ? "text-right" : "text-left"}`;
+              const commonClass = `group relative flex items-start justify-between gap-3 rounded-2xl glass p-4 transition duration-300 hover:-translate-y-0.5 hover:ring-gold sm:p-5 animate-fade-up ${dir === "rtl" ? "text-right" : "text-left"}`;
               const inner = (
                 <>
-                  <div className="flex items-start gap-3">
-                    <span className="shrink-0 font-serif text-xs tabular-nums text-primary/70 pt-1">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <span
-                      className="min-w-0 flex-1 text-base leading-snug text-foreground sm:text-lg"
-                      style={{ wordBreak: "keep-all", whiteSpace: "normal", overflowWrap: "break-word" }}
-                    >
-                      {tr(sub.title)}
-                    </span>
-                    {pdfUrl ? (
-                      <BookOpen className="h-4 w-4 shrink-0 text-primary/70 transition group-hover:text-primary mt-1" />
-                    ) : (
-                      <ArrowUpRight
-                        className="h-4 w-4 shrink-0 text-foreground/40 transition group-hover:text-primary mt-1"
-                        style={{ transform: dir === "rtl" ? "scaleX(-1)" : undefined }}
-                      />
-                    )}
-                  </div>
-                  {reference && (
-                    <div className={dir === "rtl" ? "flex justify-start" : "flex justify-end"}>
+                  <span className="shrink-0 font-serif text-xs tabular-nums text-primary/70 pt-0.5">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="flex flex-1 flex-wrap items-center justify-between gap-x-3 gap-y-1">
+                    {reference && (
                       <span
-                        className="inline-block max-w-full rounded-full border border-primary/30 bg-primary/5 px-2.5 py-0.5 text-[10px] font-medium text-primary/80 sm:text-xs"
-                        style={{ wordBreak: "normal", overflowWrap: "break-word" }}
+                        className="order-first shrink-0 rounded-full border border-primary/30 bg-primary/5 px-2 py-0.5 text-[10px] font-medium tabular-nums text-primary/70 sm:text-xs"
                         dir="rtl"
                       >
                         {reference}
                       </span>
-                    </div>
+                    )}
+                    <span className="min-w-0 flex-1 text-base leading-snug text-foreground sm:text-lg break-words">
+                      {tr(sub.title)}
+                    </span>
+                  </span>
+                  {pdfUrl ? (
+                    <BookOpen className="h-4 w-4 shrink-0 text-primary/70 transition group-hover:text-primary" />
+                  ) : (
+                    <ArrowUpRight
+                      className="h-4 w-4 shrink-0 text-foreground/40 transition group-hover:text-primary"
+                      style={{ transform: dir === "rtl" ? "scaleX(-1)" : undefined }}
+                    />
                   )}
                 </>
               );

@@ -36,7 +36,7 @@ function PdfViewerPage() {
   return (
     <div className="relative min-h-screen">
       <AmbientBackground />
-      <div className="sticky top-0 z-50 border-b border-border/40 bg-[#1A1512]/40 backdrop-blur-lg">
+      <div className="sticky top-0 z-30 glass-strong border-b border-border/40">
         <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 sm:px-6">
           <button
             type="button"

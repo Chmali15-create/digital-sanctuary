@@ -13,7 +13,7 @@ interface BackBarProps {
 export function BackBar({ to, params, label, eyebrow }: BackBarProps) {
   const { t, dir } = useI18n();
   return (
-    <div className="sticky top-0 z-50 border-b border-border/40 bg-[#1A1512]/40 backdrop-blur-lg">
+    <div className="sticky top-0 z-30 glass-strong border-b border-border/40">
       <div className="mx-auto flex max-w-6xl items-center gap-4 px-5 py-4 sm:px-8">
         <Link
           to={to as any}
