@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
 import pdfWorkerUrl from "pdfjs-dist/build/pdf.worker.mjs?url";
+import type { PDFDocumentProxy, RenderTask } from "pdfjs-dist/types/src/display/api";
 
 interface PdfViewerProps {
   url: string;
@@ -101,8 +102,8 @@ export function PdfViewer({ url, title, page, pageOffset = 0 }: PdfViewerProps) 
     if (!blobUrl || !containerSize.width || !containerSize.height) return;
 
     let cancelled = false;
-    let loadingTask: { promise: Promise<unknown>; destroy: () => Promise<void> } | null = null;
-    let renderTask: { promise: Promise<void>; cancel: () => void } | null = null;
+    let loadingTask: { promise: Promise<PDFDocumentProxy>; destroy: () => Promise<void> } | null = null;
+    let renderTask: RenderTask | null = null;
 
     async function renderPdfPage() {
       const canvas = canvasRef.current;
@@ -113,11 +114,12 @@ export function PdfViewer({ url, title, page, pageOffset = 0 }: PdfViewerProps) 
       setHasError(false);
 
       try {
-        const pdfjsLib = await import("pdfjs-dist/build/pdf.mjs");
+        const pdfjsLib = await import("pdfjs-dist");
         pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
-        loadingTask = pdfjsLib.getDocument({ url: blobUrl });
-        const pdf = await loadingTask.promise;
+        const task = pdfjsLib.getDocument({ url: blobUrl });
+        loadingTask = task;
+        const pdf = await task.promise;
         if (cancelled) return;
 
         const pageNumber = Math.min(targetPage, pdf.numPages);
@@ -145,8 +147,9 @@ export function PdfViewer({ url, title, page, pageOffset = 0 }: PdfViewerProps) 
         context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
         context.clearRect(0, 0, viewport.width, viewport.height);
 
-        renderTask = pdfPage.render({ canvasContext: context, viewport });
-        await renderTask.promise;
+        const taskRender = pdfPage.render({ canvasContext: context, viewport });
+        renderTask = taskRender;
+        await taskRender.promise;
       } catch (error) {
         if (!cancelled && !(error instanceof Error && error.name === "RenderingCancelledException")) {
           console.error("PDF canvas rendering failed", error);
