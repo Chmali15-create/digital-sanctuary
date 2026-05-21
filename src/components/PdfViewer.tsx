@@ -13,7 +13,7 @@ interface PdfViewerProps {
   pageOffset?: number;
 }
 
-const PDF_SOURCE_URL =
+export const PDF_SOURCE_URL =
   "https://github.com/Chmali15-create/digital-sanctuary/releases/download/v2.0/KHUTBAAT_E_HAKEEM_UL_UMMAT_VOL_03.pdf";
 
 export function PdfViewer({ url, title, page, pageOffset = 0 }: PdfViewerProps) {
