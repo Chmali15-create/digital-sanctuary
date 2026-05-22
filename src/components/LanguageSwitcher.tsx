@@ -30,7 +30,7 @@ export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
         {!compact && <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">{current.code}</span>}
       </button>
       {open && (
-        <div className="absolute end-0 mt-2 w-44 overflow-hidden rounded-2xl glass-strong shadow-elegant z-50 animate-fade-up">
+        <div className="absolute end-0 mt-2 w-44 overflow-hidden rounded-2xl bg-[#1A1512]/80 backdrop-blur-lg border border-[#2C221E] shadow-xl z-50 animate-fade-up">
           {LANGS.map((l) => (
             <button
               key={l.code}
