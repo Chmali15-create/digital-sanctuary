@@ -18,11 +18,15 @@ export function PdfViewer({ url, title, page, pageOffset = 0 }: PdfViewerProps) 
  // attachment headers — Mozilla's hosted pdf.js can't embed them reliably.
   // Proxy those through our own same-origin endpoint so the viewer sees a
   // clean inline application/pdf response.
-  const needsProxy = /(^|\.)github(usercontent)?\.com$/i.test(new URL(url).hostname);
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  let needsProxy = false;
+  try {
+    needsProxy = /(^|\.)github(usercontent)?\.com$/i.test(new URL(url).hostname);
+  } catch {}
   const fileUrl = needsProxy
-    ? `/api/public/pdf-proxy?url=${encodeURIComponent(url)}`
+    ? `${origin}/api/public/pdf-proxy?url=${encodeURIComponent(url)}`
     : url;
-  const src = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(fileUrl.startsWith("/") ? new URL(fileUrl, window.location.origin).toString() : fileUrl)}${hash}`;
+  const src = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(fileUrl)}${hash}`;
   return (
     <div className="relative h-[calc(100vh-5rem)] w-full overflow-hidden rounded-3xl glass-strong shadow-elegant">
       <iframe
