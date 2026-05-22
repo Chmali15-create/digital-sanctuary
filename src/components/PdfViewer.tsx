@@ -13,19 +13,17 @@ interface PdfViewerProps {
 export function PdfViewer({ url, title, page, pageOffset = 0 }: PdfViewerProps) {
   // Map our 1-based "app page" (cover = 1) to the PDF's physical page.
   const targetPage = page ? Math.max(1, page + pageOffset) : undefined;
-  const hash = targetPage ? `#page=${targetPage}&zoom=80` : "#zoom=80";
-  const src = `${url}${hash}`;
+  const hash = targetPage ? `#page=${targetPage}` : "";
+  const src = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(url)}${hash}`;
   return (
-    <div
-      key="pdf-v3-fresh-stream"
-      className="w-full h-[calc(100vh-130px)] bg-[#15110E] overflow-hidden rounded-xl border border-[#2C221E] shadow-2xl"
-    >
-      <embed
+    <div className="relative h-[calc(100vh-5rem)] w-full overflow-hidden rounded-3xl glass-strong shadow-elegant">
+      <iframe
         src={src}
-        type="application/pdf"
         title={title}
-        className="w-full h-full border-none"
-        style={{ pointerEvents: "auto" }}
+        width="100%"
+        height="100%"
+        className="h-full w-full rounded-3xl bg-background"
+        style={{ border: "none" }}
       />
     </div>
   );
