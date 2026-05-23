@@ -17,6 +17,12 @@ export interface ImanSubtopic {
 
 export const IMAN_PARENT_ID = "imn_01";
 
+// Shared default PDF for faith cards that don't yet have a dedicated source.
+// The pdf.js viewer opens with its full native toolbar (sidebar toggle,
+// zoom in/out, automatic-zoom dropdown, page input, print, download, rotate).
+const FAITH_DEFAULT_PDF =
+  "https://raw.githubusercontent.com/Chmali15-create/digital-sanctuary/main/public/KHUTBAAT_E_HAKEEM_UL_UMMAT_VOL_03.pdf";
+
 export const IMAN_SUBTOPICS: ImanSubtopic[] = [
   { id: "imn1_01", title: { ur: "تفصیل الدین (ایمان وعمل)", en: "Detail of Deen (Faith & Action)", ar: "تفصيل الدين (الإيمان والعمل)" }, reference: "خطبات حکیم الامت: 3/48", pdfUrl: "https://raw.githubusercontent.com/Chmali15-create/digital-sanctuary/main/public/KHUTBAAT_E_HAKEEM_UL_UMMAT_VOL_03.pdf", pdfPage: 48, pdfPageOffset: 1 },
   { id: "imn1_02", title: { ur: "شرط الایمان", en: "Condition of Faith", ar: "شرط الإيمان" }, reference: "خطبات حکیم الامت: 6/176", pdfUrl: FAITH_DEFAULT_PDF, pdfPage: 1 },
@@ -70,9 +76,3 @@ export const IMAN_SUBTOPICS: ImanSubtopic[] = [
   { id: "imn1_50", title: { ur: "آسمانی کتابوں پر ایمان", en: "Belief in Heavenly Books", ar: "الإيمان بالكتب السماوية" }, pdfUrl: FAITH_DEFAULT_PDF, pdfPage: 1 },
   { id: "imn1_51", title: { ur: "ایمانیات پر ایک مجموعی نظر", en: "Overview of Beliefs (Imaniyat)", ar: "نظرة عامة على الإيمانيات" }, pdfUrl: FAITH_DEFAULT_PDF, pdfPage: 1 },
 ];
-
-// Shared default PDF for faith cards that don't yet have a dedicated source.
-// The pdf.js viewer opens with its full native toolbar (sidebar toggle,
-// zoom in/out, automatic-zoom dropdown, page input, print, download, rotate).
-const FAITH_DEFAULT_PDF =
-  "https://raw.githubusercontent.com/Chmali15-create/digital-sanctuary/main/public/KHUTBAAT_E_HAKEEM_UL_UMMAT_VOL_03.pdf";
